@@ -1,0 +1,21 @@
+﻿#アイドルに含まれるプロフ情報を抜き出し
+
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>
+PREFIX imasrdf: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX math: <http://www.w3.org/2005/xpath-functions/math#>
+PREFIX xsd: <https://www.w3.org/TR/xmlschema11-2/#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+
+select distinct ?predicate ?object
+where{
+  ?class_iri rdf:type ?class.
+  ?class rdfs:label ?class_label.
+  filter(contains(?class_label,"アイドル"))
+  ?idol_iri rdf:type imas:Idol;
+               schema:name ?idol_name.
+  filter(contains(?idol_name,"喜多日菜子"))
+  ?idol_iri ?predicate ?object
+}

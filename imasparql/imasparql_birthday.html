@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+
+  <meta charset="utf-8" />
+  <title>アイドルの誕生日</title>
+</head>
+
+<body>
+  <input type="button" value="表示" onclick="loadBirthday();">
+  <h1>直近の誕生日</h1>
+  <div id="date0"></div>
+  <div id="0"></div>
+  <div id="date1"></div>
+  <div id="1"></div>
+  <div id="date2"></div>
+  <div id="2"></div>
+  <div id="date3"></div>
+  <div id="3"></div>
+  <div id="date4"></div>
+  <div id="4"></div>
+  <div id="date5"></div>
+  <div id="5"></div>
+  <div id="date6"></div>
+  <div id="6"></div>
+  <script>
+    // 定数定義
+    const URL = "https://sparql.crssnky.xyz/spql/imas/query?query=";
+    const Query = ['PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>PREFIX schema: <http://schema.org/>PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>SELECT (sample(?o) as ?date) (sample(?n) as ?name)WHERE {?sub schema:birthDate ?o;rdfs:label ?n;bind("', '"^^xsd:gMonthDay as ?3ago)bind("', '"^^xsd:gMonthDay as ?3later)FILTER(?o>=?3ago && ?o<=?3later).}group by(?sub) order by(?o)'];
+
+    // ロード時処理
+    const date = new Date();
+    var strings = [];
+    date.setDate(date.getDate() - 3)
+    for (var i = 0; i < 7; i++) {
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      strings.push("--" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day));
+      document.getElementById("date" + i.toString()).innerHTML = "<h3>" + month + "月" + day + "日</h3>"
+      date.setDate(date.getDate() + 1);
+    }
+
+    const request = new XMLHttpRequest();
+    // 通信成功
+    request.addEventListener("load", (e) => {
+      // サーバでの処理失敗判定
+      if (e.target.status != 200) {
+        console.log(event.target.status + ':' + event.target.statusText);
+        return;
+      }
+      // 一度divの中身を空にする
+      for (var i = 0; i < 7; i++) {
+        document.getElementById(i.toString()).innerHTML = "";
+      }
+      // JSON分解
+      const json = JSON.parse(e.target.responseText)["results"]["bindings"];
+      json.forEach(i => {
+        const current = i["date"]["value"];
+        strings.forEach(function (j, index) {
+          if (current === j) {
+            const div = document.getElementById(index.toString());
+            div.innerHTML += i["name"]["value"] + "<br>";
+          }
+        });
+      });
+    });
+    // 通信失敗
+    request.addEventListener("error", () => {
+      console.log("Http Request Error");
+    });
+
+    function loadBirthday() {
+      request.open("GET", URL + encodeURIComponent(Query[0] + strings[0] + Query[1] + strings[strings.length - 1] + Query[2]));
+      request.send();
+    };
+  </script>
+</body>
+
+</html>

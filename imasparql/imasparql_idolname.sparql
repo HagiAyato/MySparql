@@ -1,0 +1,42 @@
+﻿#アイドル名あいまい検索
+
+PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>
+PREFIX schema: <http://schema.org/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT DISTINCT *
+WHERE {
+  #名前検索本体
+  ?s schema:name   ?name
+         FILTER regex(?name, "天", "i") .
+  #アイドルのデータを抜き出し
+  ?s rdf:type ?ctype . FILTER( ?ctype = imas:Idol )
+  #ブランドタイトル
+  OPTIONAL { ?s imas:Title ?title. }
+  #CV(日本語名のみ)
+  OPTIONAL { ?s imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) }
+  #属性
+  OPTIONAL { ?s imas:Division ?division1. }
+  OPTIONAL { ?s imas:Type ?division2. }
+  OPTIONAL { ?s imas:Category ?division3. }
+  #血液型
+  OPTIONAL { ?s imas:BloodType ?bloodType . }
+  #年齢
+  OPTIONAL { ?s foaf:age ?age . }
+  #身長体重等身体要素
+  OPTIONAL { ?s schema:height ?height . }
+  OPTIONAL { ?s schema:weight ?weight . }
+  OPTIONAL { ?s imas:Handedness ?handedness. }
+  OPTIONAL { ?s imas:Bust ?bust. }
+  OPTIONAL { ?s imas:Waist ?waist. }
+  OPTIONAL { ?s imas:Hip ?hip. }
+  OPTIONAL { ?s imas:ShoeSize ?shoeSize. }
+  #誕生日・出身
+  OPTIONAL { ?s schema:birthDate ?birthDate . }
+  OPTIONAL { ?s imas:Constellation ?constellation. }
+  OPTIONAL { ?s schema:birthPlace ?birthPlace . }
+  #説明
+  OPTIONAL { ?s schema:description ?description . }
+  #公式のアイドル紹介リンク
+  OPTIONAL { ?s imas:IdolListURL ?idolListURL . }
+}
