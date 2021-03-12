@@ -34,6 +34,18 @@ function OnChangeInputEnable(swID, inputID, isEnabled) {
     $("#" + inputID).prop("disabled", !isEnableInput[swID])
 }
 
+/**
+ * Sparql向けのエスケープ処理
+ * @param {string} param エスケープする文字列
+ * @returns 
+ */
+function escapeForSparql(param) {
+    return param
+        .replace(/\\/g, '\\\\\\\\') // バックスラッシュ(正規表現、sparqlで2回エスケープする※2回"\"だとimasa@rql内部エラー)
+        .replace(/'/g, "\\'")
+        .replace(/"/g, '\\"');
+}
+
 // 定数定義
 const URL = "https://sparql.crssnky.xyz/spql/imas/query?query=";
 const Query =
@@ -77,7 +89,7 @@ const request = new XMLHttpRequest();
 function doIdolSearch() {
     // 通信準備
     const nameInput = $("#idolName").val();
-    const search1 = " && regex(?name, '" + nameInput + "', 'i')";
+    const search1 = " && regex(?name, '" + escapeForSparql(nameInput) + "', 'i')";
     request.open("GET", URL + encodeURIComponent(Query[0] + ((nameInput != "" && isEnableInput["sw_idolName"]) ? search1 : "") + Query[1]));
     // 通信実行
     request.send();
