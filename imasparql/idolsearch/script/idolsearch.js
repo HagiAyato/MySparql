@@ -53,32 +53,17 @@ const Query =
         + "PREFIX schema: <http://schema.org/>"
         + "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"
         + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
-        + "SELECT DISTINCT *"
+        + "SELECT (group_concat(?title ; separator = ', ') as ?titles) ?name ?idolListURL "
         + "WHERE {"
         + "  ?s schema:name|schema:alternateName ?name"
         + "    FILTER( lang(?name) = 'ja' ",
     ") ."
     + "  ?s rdf:type ?ctype . FILTER( ?ctype = imas:Idol )"
     + "  OPTIONAL { ?s imas:Title ?title. }"
-    + "  OPTIONAL { ?s imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) }"
-    + "  OPTIONAL { ?s imas:Division ?division1. }"
-    + "  OPTIONAL { ?s imas:Type ?division2. }"
-    + "  OPTIONAL { ?s imas:Category ?division3. }"
-    + "  OPTIONAL { ?s imas:BloodType ?bloodType . }"
-    + "  OPTIONAL { ?s foaf:age ?age . }"
-    + "  OPTIONAL { ?s schema:height ?height . }"
-    + "  OPTIONAL { ?s schema:weight ?weight . }"
-    + "  OPTIONAL { ?s imas:Handedness ?handedness. }"
-    + "  OPTIONAL { ?s imas:Bust ?bust. }"
-    + "  OPTIONAL { ?s imas:Waist ?waist. }"
-    + "  OPTIONAL { ?s imas:Hip ?hip. }"
-    + "  OPTIONAL { ?s imas:ShoeSize ?shoeSize. }"
-    + "  OPTIONAL { ?s schema:birthDate ?birthDate . }"
-    + "  OPTIONAL { ?s imas:Constellation ?constellation. }"
-    + "  OPTIONAL { ?s schema:birthPlace ?birthPlace . }"
-    + "  OPTIONAL { ?s schema:description ?description . }"
     + "  OPTIONAL { ?s imas:IdolListURL ?idolListURL . }"
-    + "}"];
+    + "}"
+    + "GROUP BY ?name ?idolListURL "
+    + "ORDER BY ?name"];
 
 // HTTPリクエスト
 const request = new XMLHttpRequest();
@@ -112,8 +97,9 @@ function doIdolSearch() {
             $("#resultTable").append(
                 $("<tr></tr>")
                     .append($("<th></th>").text(index))
-                    .append($("<td></td>").text(i["title"]["value"]))
-                    .append($("<td></td>").text(i["name"]["value"]))
+                    .append($("<td></td>").text(i["titles"]["value"]))
+                    .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?idolName="
+                        + i["name"]["value"] + "'>" + i["name"]["value"] + "</a>"))
                     .append($("<td></td>").append((("idolListURL" in i)
                         ? ("<a href=" + i["idolListURL"]["value"] + ">Link</a>") : ("---"))))
             );

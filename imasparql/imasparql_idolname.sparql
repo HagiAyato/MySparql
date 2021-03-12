@@ -8,7 +8,7 @@ SELECT DISTINCT *
 WHERE {
   #名前検索本体(schema:name|schema:alternateNameとすることで、代名に対応)
   ?s schema:name|schema:alternateName ?name
-         FILTER( lang(?name) = 'en' && regex(?name, "a", "i")) .
+         FILTER( lang(?name) = 'ja' && regex(?name, "春", "i")) .
   #アイドルのデータを抜き出し
   ?s rdf:type ?ctype . FILTER( ?ctype = imas:Idol )
   #ブランドタイトル
@@ -16,9 +16,7 @@ WHERE {
   #CV(日本語名のみ)
   OPTIONAL { ?s imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) }
   #属性
-  OPTIONAL { ?s imas:Division ?division1. }
-  OPTIONAL { ?s imas:Type ?division2. }
-  OPTIONAL { ?s imas:Category ?division3. }
+  OPTIONAL { ?s imas:Division | imas:Type | imas:Category ?division. }
   #血液型
   OPTIONAL { ?s imas:BloodType ?bloodType . }
   #年齢
