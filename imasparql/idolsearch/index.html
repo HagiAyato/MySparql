@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="css/idolsearch.css" />
     </script>
     <title>im@s アイドル検索(by im@sparql)</title>
-    <meta name="description" content="im@s アイドル検索(by im@sparql)" />
+    <meta name="description" content="アイドルマスターシリーズのアイドル検索ページ(sparqlのRDB、im@sparqlを使用して実装)" />
 </head>
 
 <header>
@@ -48,11 +48,13 @@
 <body>
     <div class="container-fluid">
         <div class="p-1">
+            <!--
             <button class="btn" id="BTNReadme" onclick="dispReadme();">説明表示▼</button><br />
             <div class="border p-3" id="readme" style="display:none">
                 <h1>説明</h1>
                 <h2>概要</h2>
             </div>
+            -->
         </div>
         <h3>検索フォーム</h3>
         <form name="searchSetting">
@@ -69,10 +71,10 @@
                             data-on="有効" data-off="無効"
                             onchange="OnChangeInputEnable('sw_idolName','idolName',this.checked);" checked>
                     </td>
-                    <td><input id="idolName" type="text"/></td>
+                    <td><input id="idolName" type="text" /></td>
                 </tr>
             </table>
-            <input type="button" value="アイドル検索" onclick="doIdolSearch();"/>
+            <input type="button" value="アイドル検索" onclick="doIdolSearch();" />
         </form>
         <h3>検索結果</h3>
         <table id="resultTable" class="table table-hover"></table>
@@ -91,7 +93,8 @@
                 <a href="https://sparql.crssnky.xyz/imas/"> im@sparql</a><br />
                 <h4>製作者関係</h4>
                 <a href="https://hagiayato.github.io/my-site/"> 製作者のサイト "HA Works"</a><br />
-                <a href="https://github.com/HagiAyato/MySparql/tree/main/imasparql/idolsearch"> このwebアプリのソースコード(github)</a><br />
+                <a href="https://github.com/HagiAyato/MySparql/tree/main/imasparql/idolsearch">
+                    このwebアプリのソースコード(github)</a><br />
             </div>
         </div>
     </nav>
