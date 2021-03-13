@@ -93,15 +93,16 @@ function doIdolSearch() {
         let index = 1;
         // ヘッダ挿入
         initResultTable();
+        // 戻り値を表に入れる
         json.forEach(i => {
             $("#resultTable").append(
                 $("<tr></tr>")
                     .append($("<th></th>").text(index))
                     .append($("<td></td>").text(i["titles"]["value"]))
                     .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?idolName="
-                        + i["name"]["value"] + "'>" + i["name"]["value"] + "</a>"))
+                        + i["name"]["value"] + "' target='_blank'>" + i["name"]["value"] + "</a>"))
                     .append($("<td></td>").append((("idolListURL" in i)
-                        ? ("<a href=" + i["idolListURL"]["value"] + ">Link</a>") : ("---"))))
+                        ? ("<a href=" + i["idolListURL"]["value"] + " target='_blank'>Link</a>") : ("---"))))
             );
             index++;
         });

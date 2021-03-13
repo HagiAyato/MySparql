@@ -2,7 +2,10 @@
  * ページ表示時処理
  */
  window.onload = function () {
-    $("#idolName").text("アイドル詳細[" + getParam('idolName') + "]");
+    const idolName = getParam('idolName');
+    if(idolName == null|| idolName == "")location.href="/MySparql/imasparql/idolsearch/";
+    $("#idolName").text("アイドル詳細[" + idolName + "]");
+    // アイドル詳細読み込み
 }
 
 /**
