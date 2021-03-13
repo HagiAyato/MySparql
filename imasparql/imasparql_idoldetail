@@ -1,0 +1,54 @@
+PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>
+PREFIX schema: <http://schema.org/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+#ここにアイドルの主語を入れる
+PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/Handa_Roco>
+
+SELECT (group_concat(DISTINCT ?name ; separator = ', ') as ?アイドル名) (group_concat(DISTINCT ?title ; separator = ', ') as ?ブランド)
+  (group_concat(DISTINCT ?cv ; separator = ', ') as ?キャスト) (group_concat(DISTINCT ?division ; separator = ', ') as ?属性)
+  (?bloodType as ?血液型) (Max(?age) as ?年齢) (group_concat(DISTINCT ?gender ; separator = ', ') as ?性別)
+  (Max(?height) as ?身長) (Max(?weight) as ?体重)
+  (group_concat(DISTINCT ?handedness ; separator = ', ') as ?利き手)
+  (Max(?bust) as ?バスト_cm) (Max(?waist) as ?ウエスト_cm) (Max(?hip) as ?ヒップ_cm) (Max(?shoeSize) as ?靴のサイズ_cm)
+  (?birthDate as ?誕生日) (?constellation as ?星座) (?birthPlace as ?出身地)
+  (group_concat(DISTINCT ?hobby ; separator = ', ') as ?趣味)
+  (?color as ?色) (?idolListURL as ?アイドル名鑑リンク)
+WHERE {
+  #名前(schema:name|schema:alternateNameとすることで、代名に対応)
+  idol: schema:name|schema:alternateName ?name
+         FILTER( lang(?name) = 'ja') .
+  #アイドルのデータを抜き出し
+  idol: rdf:type ?ctype . FILTER( ?ctype = imas:Idol )
+  #ブランドタイトル
+  OPTIONAL { idol: imas:Title ?title. }
+  #CV(日本語名のみ)
+  OPTIONAL { idol: imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) }
+  #属性
+  OPTIONAL { idol: imas:Division | imas:Type | imas:Category ?division. }
+  #血液型
+  OPTIONAL { idol: imas:BloodType ?bloodType . }
+  #年齢性別
+  OPTIONAL { idol: foaf:age ?age . }
+  OPTIONAL { idol: schema:gender ?gender . }
+  #身長体重等身体要素
+  OPTIONAL { idol: schema:height ?height . }
+  OPTIONAL { idol: schema:weight ?weight . }
+  OPTIONAL { idol: imas:Handedness ?handedness. }
+  OPTIONAL { idol: imas:Bust ?bust. }
+  OPTIONAL { idol: imas:Waist ?waist. }
+  OPTIONAL { idol: imas:Hip ?hip. }
+  OPTIONAL { idol: imas:ShoeSize ?shoeSize. }
+  #誕生日・出身
+  OPTIONAL { idol: schema:birthDate ?birthDate . }
+  OPTIONAL { idol: imas:Constellation ?constellation. }
+  OPTIONAL { idol: schema:birthPlace ?birthPlace . }
+  #趣味
+  OPTIONAL { idol: imas:Hobby ?hobby. }
+  #そのほか
+  OPTIONAL { idol: imas:Hobby ?hobby. }
+  OPTIONAL { idol: imas:Color ?color. }
+  OPTIONAL { idol: imas:IdolListURL ?idolListURL . }
+}
+GROUP BY ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL
+ORDER BY ?name

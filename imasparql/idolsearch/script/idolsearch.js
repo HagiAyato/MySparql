@@ -37,7 +37,7 @@ const Query =
         + "PREFIX schema: <http://schema.org/>"
         + "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"
         + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
-        + "SELECT (group_concat(DISTINCT ?title ; separator = ', ') as ?titles) "
+        + "SELECT ?s (group_concat(DISTINCT ?title ; separator = ', ') as ?titles) "
         + "(group_concat(DISTINCT ?name ; separator = ', ') as ?iName) "
         + "WHERE {"
         + "  ?s schema:name|schema:alternateName ?name"
@@ -102,8 +102,8 @@ function doIdolSearch() {
                 $("<tr></tr>")
                     .append($("<th></th>").text(index))
                     .append($("<td></td>").text(i["titles"]["value"]))
-                    .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?idolName="
-                        + i["iName"]["value"] + "' target='_blank'>" + i["iName"]["value"] + "</a>"))
+                    .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?s="
+                        + i["s"]["value"] + "&idolName=" + i["iName"]["value"] + "' target='_blank'>" + i["iName"]["value"] + "</a>"))
                     .append($("<td></td>").append((("idolListURL" in i)
                         ? ("<a href=" + i["idolListURL"]["value"] + " target='_blank'>Link</a>") : ("---"))))
             );
