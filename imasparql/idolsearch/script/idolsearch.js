@@ -12,9 +12,9 @@ function initResultTable() {
     $("#resultTable").append(
         $("<tr></tr>")
             .append($("<th></th>").text("№"))
-            .append($("<td></td>").text("ブランド"))
-            .append($("<td></td>").text("アイドル名"))
-            .append($("<td></td>").text("アイドル名鑑(公式)"))
+            .append($("<th></th>").text("ブランド"))
+            .append($("<th></th>").text("アイドル名"))
+            .append($("<th></th>").text("アイドル名鑑(公式)"))
     );
 }
 
@@ -38,7 +38,7 @@ const Query =
         + "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"
         + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
         + "SELECT ?s (group_concat(DISTINCT ?title ; separator = ', ') as ?titles) "
-        + "(group_concat(DISTINCT ?name ; separator = ', ') as ?iName) "
+        + "(group_concat(DISTINCT ?name ; separator = ', ') as ?iName) ?idolListURL "
         + "WHERE {"
         + "  ?s schema:name|schema:alternateName ?name"
         + "    FILTER( lang(?name) = 'ja' ",
@@ -66,7 +66,7 @@ const Query =
     + "OPTIONAL { ?s imas:IdolListURL ?idolListURL . } "
     + "}"
     + "GROUP BY ?s ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL "
-    + "ORDER BY ?name"];
+    + "ORDER BY ?iName"];
 
 // HTTPリクエスト
 const request = new XMLHttpRequest();
@@ -103,7 +103,8 @@ function doIdolSearch() {
                     .append($("<th></th>").text(index))
                     .append($("<td></td>").text(i["titles"]["value"]))
                     .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?s="
-                        + i["s"]["value"] + "&idolName=" + i["iName"]["value"] + "' target='_blank'>" + i["iName"]["value"] + "</a>"))
+                        + i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "") 
+                        + "' target='_blank'>" + i["iName"]["value"] + "</a>"))
                     .append($("<td></td>").append((("idolListURL" in i)
                         ? ("<a href=" + i["idolListURL"]["value"] + " target='_blank'>Link</a>") : ("---"))))
             );

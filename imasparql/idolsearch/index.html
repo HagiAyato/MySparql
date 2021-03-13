@@ -58,17 +58,20 @@
         </div>
         <h3>検索フォーム</h3>
         <span>※検索条件として使わない項目は、検索条件欄を未入力にする</span>
-        <form name="searchSetting">
-            <table>
-                <tr>
-                    <td>氏名(部分入力可)</td>
-                    <td><input id="idolName" type="text" /></td>
-                </tr>
-            </table>
-            <input type="button" value="アイドル検索" onclick="doIdolSearch();" />
-        </form>
-        <h3>検索結果</h3>
-        <table id="resultTable" class="table table-hover"></table>
+        <!-- table-responsive:スマホ対応 -->
+        <div class="table-responsive">
+            <form name="searchSetting">
+                <table>
+                    <tr>
+                        <td>氏名(部分入力可)</td>
+                        <td><input id="idolName" type="text" /></td>
+                    </tr>
+                </table>
+                <input type="button" value="アイドル検索" onclick="doIdolSearch();" />
+            </form>
+            <h3>検索結果</h3>
+            <table id="resultTable" class="table table-hover"></table>
+        </div>
     </div>
 </body>
 
