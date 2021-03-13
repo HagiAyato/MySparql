@@ -4,9 +4,17 @@ PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>
 PREFIX schema: <http://schema.org/>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT DISTINCT *
+SELECT ?s (group_concat(DISTINCT ?name ; separator = ', ') as ?アイドル名) (group_concat(DISTINCT ?title ; separator = ', ') as ?ブランド)
+  (group_concat(DISTINCT ?cv ; separator = ', ') as ?キャスト) (group_concat(DISTINCT ?division ; separator = ', ') as ?属性)
+  (?bloodType as ?血液型) (Max(?age) as ?年齢) (group_concat(DISTINCT ?gender ; separator = ', ') as ?性別)
+  (Max(?height) as ?身長) (Max(?weight) as ?体重)
+  (group_concat(DISTINCT ?handedness ; separator = ', ') as ?利き手)
+  (Max(?bust) as ?バスト_cm) (Max(?waist) as ?ウエスト_cm) (Max(?hip) as ?ヒップ_cm) (Max(?shoeSize) as ?靴のサイズ_cm)
+  (?birthDate as ?誕生日) (?constellation as ?星座) (?birthPlace as ?出身地)
+  (group_concat(DISTINCT ?hobby ; separator = ', ') as ?趣味)
+  (?color as ?色) (?idolListURL as ?アイドル名鑑リンク)
 WHERE {
-  #名前検索本体(schema:name|schema:alternateNameとすることで、代名に対応)
+  #名前(schema:name|schema:alternateNameとすることで、代名に対応)
   ?s schema:name|schema:alternateName ?name
          FILTER( lang(?name) = 'ja' && regex(?name, "春", "i")) .
   #アイドルのデータを抜き出し
@@ -19,8 +27,9 @@ WHERE {
   OPTIONAL { ?s imas:Division | imas:Type | imas:Category ?division. }
   #血液型
   OPTIONAL { ?s imas:BloodType ?bloodType . }
-  #年齢
+  #年齢性別
   OPTIONAL { ?s foaf:age ?age . }
+  OPTIONAL { ?s schema:gender ?gender . }
   #身長体重等身体要素
   OPTIONAL { ?s schema:height ?height . }
   OPTIONAL { ?s schema:weight ?weight . }
@@ -33,8 +42,12 @@ WHERE {
   OPTIONAL { ?s schema:birthDate ?birthDate . }
   OPTIONAL { ?s imas:Constellation ?constellation. }
   OPTIONAL { ?s schema:birthPlace ?birthPlace . }
-  #説明
-  OPTIONAL { ?s schema:description ?description . }
-  #公式のアイドル紹介リンク
+  #趣味
+  OPTIONAL { ?s imas:Hobby ?hobby. }
+  #そのほか
+  OPTIONAL { ?s imas:Hobby ?hobby. }
+  OPTIONAL { ?s imas:Color ?color. }
   OPTIONAL { ?s imas:IdolListURL ?idolListURL . }
 }
+GROUP BY ?s ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL
+ORDER BY ?name
