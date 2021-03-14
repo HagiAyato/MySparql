@@ -18,25 +18,10 @@ function initResultTable() {
     );
 }
 
-/**
- * Sparql向けのエスケープ処理
- * @param {string} param エスケープする文字列
- * @returns 
- */
-function escapeForSparql(param) {
-    return param
-        .replace(/\\/g, '\\\\\\\\') // バックスラッシュ(正規表現、sparqlで2回エスケープする※2回"\"だとimasa@rql内部エラー)
-        .replace(/'/g, "\\'")
-        .replace(/"/g, '\\"');
-}
-
 // 定数定義
 const URL = "https://sparql.crssnky.xyz/spql/imas/query?query=";
 const Query =
-    ["PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>"
-        + "PREFIX schema: <http://schema.org/>"
-        + "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"
-        + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
+    [Query_def
         + "SELECT ?s (group_concat(DISTINCT ?title ; separator = ', ') as ?titles) "
         + "(group_concat(DISTINCT ?name ; separator = ', ') as ?iName) ?idolListURL "
         + "WHERE {"
@@ -46,6 +31,7 @@ const Query =
     + "?s rdf:type ?ctype . FILTER( ?ctype = imas:Idol ) "
     + "OPTIONAL { ?s imas:Title ?title. } "
     + "OPTIONAL { ?s imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) } "
+    + "OPTIONAL { ?s imas:pastCv ?pastCv . FILTER( lang(?pastCv) = 'ja' ) } "
     + "OPTIONAL { ?s imas:Division | imas:Type | imas:Category ?division. } "
     + "OPTIONAL { ?s imas:BloodType ?bloodType . } "
     + "OPTIONAL { ?s foaf:age ?age . } "
@@ -61,8 +47,11 @@ const Query =
     + "OPTIONAL { ?s imas:Constellation ?constellation. } "
     + "OPTIONAL { ?s schema:birthPlace ?birthPlace . } "
     + "OPTIONAL { ?s imas:Hobby ?hobby. } "
-    + "OPTIONAL { ?s imas:Hobby ?hobby. } "
+    + "OPTIONAL { ?s imas:Favorite ?favorite. } "
+    + "OPTIONAL { ?s imas:Talent ?talent. } "
     + "OPTIONAL { ?s imas:Color ?color. } "
+    + "OPTIONAL { ?s imas:PopLinksAttribute ?popLinksAttribute . FILTER( lang(?popLinksAttribute) = 'ja' ) } "
+    + "OPTIONAL { ?s schema:description ?description . } "
     + "OPTIONAL { ?s imas:IdolListURL ?idolListURL . } "
     + "}"
     + "GROUP BY ?s ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL "

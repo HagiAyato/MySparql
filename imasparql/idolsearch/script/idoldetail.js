@@ -36,25 +36,10 @@ function initResultTable() {
     );
 }
 
-/**
- * Sparql向けのエスケープ処理
- * @param {string} param エスケープする文字列
- * @returns 
- */
-function escapeForSparql(param) {
-    return param
-        .replace(/\\/g, '\\\\\\\\') // バックスラッシュ(正規表現、sparqlで2回エスケープする※2回"\"だとimasa@rql内部エラー)
-        .replace(/'/g, "\\'")
-        .replace(/"/g, '\\"');
-}
-
 // 定数定義
 const URL = "https://sparql.crssnky.xyz/spql/imas/query?query=";
 const Query =
-    ["PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#> "
-        + "PREFIX schema: <http://schema.org/> "
-        + "PREFIX foaf: <http://xmlns.com/foaf/0.1/> "
-        + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+    [Query_def
         + "PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/",
     "> "
     + "SELECT (group_concat(DISTINCT ?name ; separator = ', ') as ?アイドル名) (group_concat(DISTINCT ?title ; separator = ', ') as ?ブランド) "
@@ -108,7 +93,7 @@ const request = new XMLHttpRequest();
  */
 function doIdolDetail(Subject) {
     // 通信準備
-    request.open("GET", URL + encodeURIComponent(Query[0] + (Subject) + Query[1]));
+    request.open("GET", URL + encodeURIComponent(Query[0] + escapeForSparql(Subject) + Query[1]));
     // 通信実行
     request.send();
     // 通信成功
@@ -131,21 +116,18 @@ function doIdolDetail(Subject) {
             for (var item in i) {
                 // item名称により分岐
                 switch (true) {
-                    case /_kg$/.test(item):
+                    case /^.+_.+$/.test(item):
+                        // 単位付きデータ
+                        const val = i[item]["value"];
+                        const unit = item.replace(/^.+_/, "");
                         $("#resultTable").append(
                             $("<tr></tr>")
                                 .append($("<th></th>").text(item.replace(/_kg$/, "")))
-                                .append($("<td></td>").text(i[item]["value"] + "[kg]"))
-                        );
-                        break;
-                    case /_cm$/.test(item):
-                        $("#resultTable").append(
-                            $("<tr></tr>")
-                                .append($("<th></th>").text(item.replace(/_cm$/, "")))
-                                .append($("<td></td>").text(i[item]["value"] + "[cm]"))
+                                .append($("<td></td>").text(val + (isNaN(val) ? "" : "[" + unit + "]")))
                         );
                         break;
                     case /^年齢$/.test(item):
+                        // 年齢
                         $("#resultTable").append(
                             $("<tr></tr>")
                                 .append($("<th></th>").text(item))
@@ -153,6 +135,7 @@ function doIdolDetail(Subject) {
                         );
                         break;
                     case /^性別$/.test(item):
+                        // 性別
                         let gender = i[item]["value"];
                         gender = (gender == "male" ? "男性" : (gender == "female" ? "女性" : gender))
                         $("#resultTable").append(
@@ -162,6 +145,7 @@ function doIdolDetail(Subject) {
                         );
                         break;
                     case /^利き手$/.test(item):
+                        // 利き手
                         let hand = i[item]["value"];
                         hand = (hand == "right" ? "右利き" : (hand == "left" ? "左利き" : (hand == "both" ? "両利き" : hand)))
                         $("#resultTable").append(
@@ -171,6 +155,7 @@ function doIdolDetail(Subject) {
                         );
                         break;
                     case /^血液型$/.test(item):
+                        // 血液型
                         $("#resultTable").append(
                             $("<tr></tr>")
                                 .append($("<th></th>").text(item))
@@ -178,6 +163,7 @@ function doIdolDetail(Subject) {
                         );
                         break;
                     case /^誕生日$/.test(item):
+                        // 誕生日
                         $("#resultTable").append(
                             $("<tr></tr>")
                                 .append($("<th></th>").text(item))
@@ -185,6 +171,7 @@ function doIdolDetail(Subject) {
                         );
                         break;
                     case /^シンボルカラー$/.test(item):
+                        //シンボルカラー
                         $("#resultTable").append(
                             $("<tr></tr>")
                                 .append($("<th></th>").text(item))
@@ -193,6 +180,7 @@ function doIdolDetail(Subject) {
                         );
                         break;
                     case /^アイドル名鑑リンク$/.test(item):
+                        // リンク
                         $("#resultTable").append(
                             $("<tr></tr>")
                                 .append($("<th></th>").text(item))
