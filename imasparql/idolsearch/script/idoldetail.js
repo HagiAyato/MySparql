@@ -32,7 +32,7 @@ function initResultTable() {
     $("#resultTable").append(
         $("<tr></tr>")
             .append($("<th></th>").text("項目"))
-            .append($("<td></td>").text("プロフィール"))
+            .append($("<th></th>").text("プロフィール"))
     );
 }
 
