@@ -15,6 +15,7 @@ SELECT (group_concat(DISTINCT ?name ; separator = ', ') as ?アイドル名) (gr
   (group_concat(DISTINCT ?hobby ; separator = ', ') as ?趣味)
   (?color as ?色) (?idolListURL as ?アイドル名鑑リンク)
 WHERE {
+  {
   #名前(schema:name|schema:alternateNameとすることで、代名に対応)
   idol: schema:name|schema:alternateName ?name
          FILTER( lang(?name) = 'ja') .
@@ -49,6 +50,44 @@ WHERE {
   OPTIONAL { idol: imas:Hobby ?hobby. }
   OPTIONAL { idol: imas:Color ?color. }
   OPTIONAL { idol: imas:IdolListURL ?idolListURL . }
+  }UNION{
+  #氏名、代名なしの場合
+  FILTER NOT EXISTS {idol: schema:name|schema:alternateName ?fname}
+  #下の名前だけで判断
+  idol: schema:givenName ?name
+         FILTER( lang(?name) = 'ja') .
+  #アイドルのデータを抜き出し
+  idol: rdf:type ?ctype . FILTER( ?ctype = imas:Idol )
+  #ブランドタイトル
+  OPTIONAL { idol: imas:Title ?title. }
+  #CV(日本語名のみ)
+  OPTIONAL { idol: imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) }
+  #属性
+  OPTIONAL { idol: imas:Division | imas:Type | imas:Category ?division. }
+  #血液型
+  OPTIONAL { idol: imas:BloodType ?bloodType . }
+  #年齢性別
+  OPTIONAL { idol: foaf:age ?age . }
+  OPTIONAL { idol: schema:gender ?gender . }
+  #身長体重等身体要素
+  OPTIONAL { idol: schema:height ?height . }
+  OPTIONAL { idol: schema:weight ?weight . }
+  OPTIONAL { idol: imas:Handedness ?handedness. }
+  OPTIONAL { idol: imas:Bust ?bust. }
+  OPTIONAL { idol: imas:Waist ?waist. }
+  OPTIONAL { idol: imas:Hip ?hip. }
+  OPTIONAL { idol: imas:ShoeSize ?shoeSize. }
+  #誕生日・出身
+  OPTIONAL { idol: schema:birthDate ?birthDate . }
+  OPTIONAL { idol: imas:Constellation ?constellation. }
+  OPTIONAL { idol: schema:birthPlace ?birthPlace . }
+  #趣味
+  OPTIONAL { idol: imas:Hobby ?hobby. }
+  #そのほか
+  OPTIONAL { idol: imas:Hobby ?hobby. }
+  OPTIONAL { idol: imas:Color ?color. }
+  OPTIONAL { idol: imas:IdolListURL ?idolListURL . }
+  }
 }
 GROUP BY ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL
 ORDER BY ?name

@@ -39,50 +39,61 @@ function initResultTable() {
 // 定数定義
 const URL = "https://sparql.crssnky.xyz/spql/imas/query?query=";
 const Query =
-    [Query_def
+    [// 1.定義
+        Query_def
         + "PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/",
-    "> "
-    + "SELECT (group_concat(DISTINCT ?name ; separator = ', ') as ?アイドル名) (group_concat(DISTINCT ?title ; separator = ', ') as ?ブランド) "
-    + "  (group_concat(DISTINCT ?cv ; separator = ', ') as ?キャスト) (group_concat(DISTINCT ?pastCv ; separator = ', ') as ?過去のキャスト) "
-    + "  (group_concat(DISTINCT ?division ; separator = ', ') as ?属性) "
-    + "  (?bloodType as ?血液型) (Max(?age) as ?年齢) (group_concat(DISTINCT ?gender ; separator = ', ') as ?性別) "
-    + "  (Max(?height) as ?身長_cm) (Max(?weight) as ?体重_kg) "
-    + "  (group_concat(DISTINCT ?handedness ; separator = ', ') as ?利き手) "
-    + "  (Max(?bust) as ?バスト_cm) (Max(?waist) as ?ウエスト_cm) (Max(?hip) as ?ヒップ_cm) (Max(?shoeSize) as ?靴のサイズ_cm) "
-    + "  (?birthDate as ?誕生日) (?constellation as ?星座) (?birthPlace as ?出身地) "
-    + "  (group_concat(DISTINCT ?hobby ; separator = ', ') as ?趣味) (group_concat(DISTINCT ?favorite ; separator = ', ') as ?好きなもの・こと) "
-    + "  (group_concat(DISTINCT ?talent ; separator = ', ') as ?特技) (?color as ?シンボルカラー) (?idolListURL as ?アイドル名鑑リンク) "
-    + "  (group_concat(DISTINCT ?description ; separator = ', ') as ?説明) (group_concat(DISTINCT ?popLinksAttribute ; separator = ', ') as ?ポプマス属性) "
-    + "WHERE { "
-    + "  idol: schema:name|schema:alternateName ?name "
-    + "         FILTER( lang(?name) = 'ja') . "
-    + "  idol: rdf:type ?ctype . FILTER( ?ctype = imas:Idol ) "
-    + "  OPTIONAL { idol: imas:Title ?title. } "
-    + "  OPTIONAL { idol: imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) } "
-    + "  OPTIONAL { idol: imas:pastCv ?pastCv . FILTER( lang(?pastCv) = 'ja' ) } "
-    + "  OPTIONAL { idol: imas:Division | imas:Type | imas:Category ?division. } "
-    + "  OPTIONAL { idol: imas:BloodType ?bloodType . } "
-    + "  OPTIONAL { idol: foaf:age ?age . } "
-    + "  OPTIONAL { idol: schema:gender ?gender . } "
-    + "  OPTIONAL { idol: schema:height ?height . } "
-    + "  OPTIONAL { idol: schema:weight ?weight . } "
-    + "  OPTIONAL { idol: imas:Handedness ?handedness. } "
-    + "  OPTIONAL { idol: imas:Bust ?bust. } "
-    + "  OPTIONAL { idol: imas:Waist ?waist. } "
-    + "  OPTIONAL { idol: imas:Hip ?hip. } "
-    + "  OPTIONAL { idol: imas:ShoeSize ?shoeSize. } "
-    + "  OPTIONAL { idol: schema:birthDate ?birthDate . } "
-    + "  OPTIONAL { idol: imas:Constellation ?constellation. } "
-    + "  OPTIONAL { idol: schema:birthPlace ?birthPlace . } "
-    + "  OPTIONAL { idol: imas:Hobby ?hobby. } "
-    + "  OPTIONAL { idol: imas:Favorite ?favorite. } "
-    + "  OPTIONAL { idol: imas:Talent ?talent. } "
-    + "  OPTIONAL { idol: imas:Color ?color. } "
-    + "  OPTIONAL { idol: imas:PopLinksAttribute ?popLinksAttribute . FILTER( lang(?popLinksAttribute) = 'ja' ) } "
-    + "  OPTIONAL { idol: schema:description ?description . } "
-    + "  OPTIONAL { idol: imas:IdolListURL ?idolListURL . } "
-    + "} "
-    + "GROUP BY ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL"];
+        // 2.SELECT
+        "> "
+        + "SELECT (group_concat(DISTINCT ?name ; separator = ', ') as ?アイドル名) (group_concat(DISTINCT ?title ; separator = ', ') as ?ブランド) "
+        + "  (group_concat(DISTINCT ?cv ; separator = ', ') as ?キャスト) (group_concat(DISTINCT ?pastCv ; separator = ', ') as ?過去のキャスト) "
+        + "  (group_concat(DISTINCT ?division ; separator = ', ') as ?属性) "
+        + "  (?bloodType as ?血液型) (Max(?age) as ?年齢) (group_concat(DISTINCT ?gender ; separator = ', ') as ?性別) "
+        + "  (Max(?height) as ?身長_cm) (Max(?weight) as ?体重_kg) "
+        + "  (group_concat(DISTINCT ?handedness ; separator = ', ') as ?利き手) "
+        + "  (Max(?bust) as ?バスト_cm) (Max(?waist) as ?ウエスト_cm) (Max(?hip) as ?ヒップ_cm) (Max(?shoeSize) as ?靴のサイズ_cm) "
+        + "  (?birthDate as ?誕生日) (?constellation as ?星座) (?birthPlace as ?出身地) "
+        + "  (group_concat(DISTINCT ?hobby ; separator = ', ') as ?趣味) (group_concat(DISTINCT ?favorite ; separator = ', ') as ?好きなもの・こと) "
+        + "  (group_concat(DISTINCT ?talent ; separator = ', ') as ?特技) (?color as ?シンボルカラー) (?idolListURL as ?アイドル名鑑リンク) "
+        + "  (group_concat(DISTINCT ?description ; separator = ', ') as ?説明) (group_concat(DISTINCT ?popLinksAttribute ; separator = ', ') as ?ポプマス属性) "
+        + "WHERE { "
+        + "  { "
+        + "  idol: schema:name|schema:alternateName ?name "
+        + "         FILTER( lang(?name) = 'ja') . ",
+        // 3,5.各種データ値
+        "  idol: rdf:type ?ctype . FILTER( ?ctype = imas:Idol ) "
+        + "  OPTIONAL { idol: imas:Title ?title. } "
+        + "  OPTIONAL { idol: imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) } "
+        + "  OPTIONAL { idol: imas:pastCv ?pastCv . FILTER( lang(?pastCv) = 'ja' ) } "
+        + "  OPTIONAL { idol: imas:Division | imas:Type | imas:Category ?division. } "
+        + "  OPTIONAL { idol: imas:BloodType ?bloodType . } "
+        + "  OPTIONAL { idol: foaf:age ?age . } "
+        + "  OPTIONAL { idol: schema:gender ?gender . } "
+        + "  OPTIONAL { idol: schema:height ?height . } "
+        + "  OPTIONAL { idol: schema:weight ?weight . } "
+        + "  OPTIONAL { idol: imas:Handedness ?handedness. } "
+        + "  OPTIONAL { idol: imas:Bust ?bust. } "
+        + "  OPTIONAL { idol: imas:Waist ?waist. } "
+        + "  OPTIONAL { idol: imas:Hip ?hip. } "
+        + "  OPTIONAL { idol: imas:ShoeSize ?shoeSize. } "
+        + "  OPTIONAL { idol: schema:birthDate ?birthDate . } "
+        + "  OPTIONAL { idol: imas:Constellation ?constellation. } "
+        + "  OPTIONAL { idol: schema:birthPlace ?birthPlace . } "
+        + "  OPTIONAL { idol: imas:Hobby ?hobby. } "
+        + "  OPTIONAL { idol: imas:Favorite ?favorite. } "
+        + "  OPTIONAL { idol: imas:Talent ?talent. } "
+        + "  OPTIONAL { idol: imas:Color ?color. } "
+        + "  OPTIONAL { idol: imas:PopLinksAttribute ?popLinksAttribute . FILTER( lang(?popLinksAttribute) = 'ja' ) } "
+        + "  OPTIONAL { idol: schema:description ?description . } "
+        + "  OPTIONAL { idol: imas:IdolListURL ?idolListURL . } ",
+        // 4.UNION～名前のみ検索
+        "  }UNION{"
+        + "  FILTER NOT EXISTS {idol: schema:name|schema:alternateName ?fname} "
+        + "  idol: schema:givenName ?name "
+        + "    FILTER( lang(?name) = 'ja') . ",
+        // 6.集約とソート
+        "  } "
+        + "} "
+        + "GROUP BY ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL"];
 
 // HTTPリクエスト
 const request = new XMLHttpRequest();
@@ -93,7 +104,8 @@ const request = new XMLHttpRequest();
  */
 function doIdolDetail(Subject) {
     // 通信準備
-    request.open("GET", URL + encodeURIComponent(Query[0] + escapeForSparql(Subject) + Query[1]));
+    const search1 = escapeForSparql(Subject);
+    request.open("GET", URL + encodeURIComponent(Query[0] + search1 + Query[1] + Query[2] + Query[3] + Query[2] + Query[4]));
     // 通信実行
     request.send();
     // 通信成功

@@ -21,41 +21,51 @@ function initResultTable() {
 // 定数定義
 const URL = "https://sparql.crssnky.xyz/spql/imas/query?query=";
 const Query =
-    [Query_def
+    [// 1.SELECT
+        Query_def
         + "SELECT ?s (group_concat(DISTINCT ?title ; separator = ', ') as ?titles) "
         + "(group_concat(DISTINCT ?name ; separator = ', ') as ?iName) ?idolListURL "
         + "WHERE {"
+        + "  {"
         + "  ?s schema:name|schema:alternateName ?name"
         + "    FILTER( lang(?name) = 'ja' ",
-    ") . "
-    + "?s rdf:type ?ctype . FILTER( ?ctype = imas:Idol ) "
-    + "OPTIONAL { ?s imas:Title ?title. } "
-    + "OPTIONAL { ?s imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) } "
-    + "OPTIONAL { ?s imas:pastCv ?pastCv . FILTER( lang(?pastCv) = 'ja' ) } "
-    + "OPTIONAL { ?s imas:Division | imas:Type | imas:Category ?division. } "
-    + "OPTIONAL { ?s imas:BloodType ?bloodType . } "
-    + "OPTIONAL { ?s foaf:age ?age . } "
-    + "OPTIONAL { ?s schema:gender ?gender . } "
-    + "OPTIONAL { ?s schema:height ?height . } "
-    + "OPTIONAL { ?s schema:weight ?weight . } "
-    + "OPTIONAL { ?s imas:Handedness ?handedness. } "
-    + "OPTIONAL { ?s imas:Bust ?bust. } "
-    + "OPTIONAL { ?s imas:Waist ?waist. } "
-    + "OPTIONAL { ?s imas:Hip ?hip. } "
-    + "OPTIONAL { ?s imas:ShoeSize ?shoeSize. } "
-    + "OPTIONAL { ?s schema:birthDate ?birthDate . } "
-    + "OPTIONAL { ?s imas:Constellation ?constellation. } "
-    + "OPTIONAL { ?s schema:birthPlace ?birthPlace . } "
-    + "OPTIONAL { ?s imas:Hobby ?hobby. } "
-    + "OPTIONAL { ?s imas:Favorite ?favorite. } "
-    + "OPTIONAL { ?s imas:Talent ?talent. } "
-    + "OPTIONAL { ?s imas:Color ?color. } "
-    + "OPTIONAL { ?s imas:PopLinksAttribute ?popLinksAttribute . FILTER( lang(?popLinksAttribute) = 'ja' ) } "
-    + "OPTIONAL { ?s schema:description ?description . } "
-    + "OPTIONAL { ?s imas:IdolListURL ?idolListURL . } "
-    + "}"
-    + "GROUP BY ?s ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL "
-    + "ORDER BY ?iName"];
+        // 2,4.各種データ値
+        ") . "
+        + "  ?s rdf:type ?ctype . FILTER( ?ctype = imas:Idol ) "
+        + "  OPTIONAL { ?s imas:Title ?title. } "
+        + "  OPTIONAL { ?s imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) } "
+        + "  OPTIONAL { ?s imas:pastCv ?pastCv . FILTER( lang(?pastCv) = 'ja' ) } "
+        + "  OPTIONAL { ?s imas:Division | imas:Type | imas:Category ?division. } "
+        + "  OPTIONAL { ?s imas:BloodType ?bloodType . } "
+        + "  OPTIONAL { ?s foaf:age ?age . } "
+        + "  OPTIONAL { ?s schema:gender ?gender . } "
+        + "  OPTIONAL { ?s schema:height ?height . } "
+        + "  OPTIONAL { ?s schema:weight ?weight . } "
+        + "  OPTIONAL { ?s imas:Handedness ?handedness. } "
+        + "  OPTIONAL { ?s imas:Bust ?bust. } "
+        + "  OPTIONAL { ?s imas:Waist ?waist. } "
+        + "  OPTIONAL { ?s imas:Hip ?hip. } "
+        + "  OPTIONAL { ?s imas:ShoeSize ?shoeSize. } "
+        + "  OPTIONAL { ?s schema:birthDate ?birthDate . } "
+        + "  OPTIONAL { ?s imas:Constellation ?constellation. } "
+        + "  OPTIONAL { ?s schema:birthPlace ?birthPlace . } "
+        + "  OPTIONAL { ?s imas:Hobby ?hobby. } "
+        + "  OPTIONAL { ?s imas:Favorite ?favorite. } "
+        + "  OPTIONAL { ?s imas:Talent ?talent. } "
+        + "  OPTIONAL { ?s imas:Color ?color. } "
+        + "  OPTIONAL { ?s imas:PopLinksAttribute ?popLinksAttribute . FILTER( lang(?popLinksAttribute) = 'ja' ) } "
+        + "  OPTIONAL { ?s schema:description ?description . } "
+        + "  OPTIONAL { ?s imas:IdolListURL ?idolListURL . } ",
+        // 3.UNION～名前のみ検索
+        "  }UNION{"
+        + "  FILTER NOT EXISTS {?s schema:name|schema:alternateName ?fname} "
+        + "  ?s schema:givenName ?name "
+        + "    FILTER( lang(?name) = 'ja' ",
+        // 5.集約とソート
+        "  }"
+        + "}"
+        + "GROUP BY ?s ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL "
+        + "ORDER BY ?iName"];
 
 // HTTPリクエスト
 const request = new XMLHttpRequest();
@@ -66,8 +76,9 @@ const request = new XMLHttpRequest();
 function doIdolSearch() {
     // 通信準備
     const nameInput = $("#idolName").val();
-    const search1 = " && regex(?name, '" + escapeForSparql(nameInput) + "', 'i')";
-    request.open("GET", URL + encodeURIComponent(Query[0] + ((nameInput != "") ? search1 : "") + Query[1]));
+    const search0 = " && regex(?name, '" + escapeForSparql(nameInput) + "', 'i')";
+    const search1 = (nameInput != "") ? search0 : "";
+    request.open("GET", URL + encodeURIComponent(Query[0] + search1 + Query[1] + Query[2] + search1 + Query[1] + Query[3]));
     // 通信実行
     request.send();
     // 通信成功
@@ -92,7 +103,7 @@ function doIdolSearch() {
                     .append($("<th></th>").text(index))
                     .append($("<td></td>").text(i["titles"]["value"]))
                     .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?s="
-                        + i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "") 
+                        + i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
                         + "' target='_blank'>" + i["iName"]["value"] + "</a>"))
                     .append($("<td></td>").append((("idolListURL" in i)
                         ? ("<a href=" + i["idolListURL"]["value"] + " target='_blank'>Link</a>") : ("---"))))
