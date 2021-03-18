@@ -19,3 +19,33 @@ function escapeForSparql(param) {
         .replace(/'/g, "\\'")
         .replace(/"/g, '\\"');
 }
+
+/**
+ * Sparqlクエリ実行関数
+ * @param {String} url 実行URL(URL+クエリ)
+ * @returns 
+ */
+var promiseSparqlRequest = function (url) {
+    return new Promise(function (resolve, reject) {
+        // HTTPリクエスト
+        const request = new XMLHttpRequest();
+        request.open("GET", url);
+        // 通信実行
+        request.send();
+        // 通信成功
+        request.addEventListener("load", (e) => {
+            // サーバでの処理失敗判定
+            if (e.target.status != 200) {
+                console.log(e.target.status + ':' + e.target.statusText);
+                reject("検索に失敗しました。");
+                return;
+            }
+            resolve(JSON.parse(e.target.responseText)["results"]["bindings"]);
+        });
+        // 通信失敗
+        request.addEventListener("error", () => {
+            console.log("Http Request Error");
+            reject("通信に失敗しました。");
+        });
+    });
+}

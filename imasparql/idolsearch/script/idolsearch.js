@@ -67,36 +67,25 @@ const Query =
         + "GROUP BY ?s ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL "
         + "ORDER BY ?iName"];
 
-// HTTPリクエスト
-const request = new XMLHttpRequest();
-
 /**
  * 検索処理本体
  */
 function doIdolSearch() {
-    // 通信準備
+    // クエリビルド
     const nameInput = $("#idolName").val();
     const search0 = " && regex(?name, '" + escapeForSparql(nameInput) + "', 'i')";
     const search1 = (nameInput != "") ? search0 : "";
-    request.open("GET", URL + encodeURIComponent(Query[0] + search1 + Query[1] + Query[2] + search1 + Query[1] + Query[3]));
+    // URL、クエリ結合
+    const urlQuery = URL + encodeURIComponent(Query[0] + search1 + Query[1] + Query[2] + search1 + Query[1] + Query[3]);
     // 通信実行
-    request.send();
-    // 通信成功
-    request.addEventListener("load", (e) => {
-        // サーバでの処理失敗判定
-        if (e.target.status != 200) {
-            console.log(e.target.status + ':' + e.target.statusText);
-            alert("検索に失敗しました。");
-            return;
-        }
+    promiseSparqlRequest(urlQuery).then(json => {
+        // 通信成功
         // 一度divの中身を空にする
         $("#resultTable tr").remove();
-        // JSON分解
-        const json = JSON.parse(e.target.responseText)["results"]["bindings"];
-        let index = 1;
         // ヘッダ挿入
         initResultTable();
         // 戻り値を表に入れる
+        let index = 1;
         json.forEach(i => {
             $("#resultTable").append(
                 $("<tr></tr>")
@@ -110,10 +99,8 @@ function doIdolSearch() {
             );
             index++;
         });
-    });
-    // 通信失敗
-    request.addEventListener("error", () => {
-        console.log("Http Request Error");
-        alert("通信に失敗しました。");
+    }).catch(error => {
+        // 通信失敗
+        alert('エラーが発生しました：' + error);
     });
 }
