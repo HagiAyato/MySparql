@@ -61,7 +61,7 @@ const Query =
         + "         FILTER( lang(?name) = 'ja') . ",
         // 3,5.各種データ値
         "  idol: rdf:type ?ctype . FILTER( ?ctype = imas:Idol ) "
-        + "  OPTIONAL { idol: imas:Title ?title. } "
+        + "  OPTIONAL { idol: imas:Brand ?title. } "
         + "  OPTIONAL { idol: imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) } "
         + "  OPTIONAL { idol: imas:pastCv ?pastCv . FILTER( lang(?pastCv) = 'ja' ) } "
         + "  OPTIONAL { idol: imas:Division | imas:Type | imas:Category ?division. } "

@@ -32,7 +32,7 @@ const Query =
         // 2,4.各種データ値
         ") . "
         + "  ?s rdf:type ?ctype . FILTER( ?ctype = imas:Idol ) "
-        + "  OPTIONAL { ?s imas:Title ?title. } "
+        + "  OPTIONAL { ?s imas:Brand ?title. } "
         + "  OPTIONAL { ?s imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) } "
         + "  OPTIONAL { ?s imas:pastCv ?pastCv . FILTER( lang(?pastCv) = 'ja' ) } "
         + "  OPTIONAL { ?s imas:Division | imas:Type | imas:Category ?division. } "
