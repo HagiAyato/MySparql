@@ -67,14 +67,23 @@ const Query =
         + "GROUP BY ?s ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL "
         + "ORDER BY ?iName"];
 
+
+const conditions = {
+    "name": "text", "cv": "text", "pastCv": "text", "birthPlace": "text", "hobby": "text", "favorite": "text", "talent": "text",
+    "description": "text"
+}
+
 /**
  * 検索処理本体
  */
 function doIdolSearch() {
     // クエリビルド
-    const nameInput = $("#idolName").val();
-    const search0 = " && regex(?name, '" + escapeForSparql(nameInput) + "', 'i')";
-    const search1 = (nameInput != "") ? search0 : "";
+    let search1 = "";
+    for (const [key, value] of Object.entries(conditions)) {
+        const inputVal = $("#" + key + "Input").val();
+        if (inputVal == "") continue;
+        search1 = search1 + " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
+    }
     // URL、クエリ結合
     const urlQuery = URL + encodeURIComponent(Query[0] + search1 + Query[1] + Query[2] + search1 + Query[1] + Query[3]);
     // 通信実行

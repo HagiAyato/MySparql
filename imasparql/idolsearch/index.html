@@ -61,15 +61,88 @@
         <span>※検索条件として使わない項目は、検索条件欄を未入力にする</span>
         <!-- table-responsive:スマホ対応 -->
         <div class="table-responsive">
-            <form name="searchSetting">
-                <table>
-                    <tr>
-                        <td>氏名(部分入力可)</td>
-                        <td><input id="idolName" type="text" /></td>
-                    </tr>
-                </table>
-                <input type="button" value="アイドル検索" onclick="doIdolSearch();" />
-            </form>
+            <div class="border p-3">
+                <b>氏名：</b>
+                <input id="nameInput" type="text" /><span>※部分入力可</span><br />
+                <button id="BTNDetail" class="btn btn-outline-secondary"
+                    onclick="dispElement('#BTNDetail', '#detailInput', '検索詳細設定');">検索詳細設定表示▼</button>
+                <div class="border p-3" id="detailInput" style="display:none">
+                    <table>
+                        <tr>
+                            <td>
+                                <b>キャスト(声優)：</b>
+                            </td>
+                            <td>
+                                <input id="cvInput" type="text" />
+                            </td>
+                            <td>
+                                <span>※部分入力可</span>
+                            </td>
+                            <td>
+                                <b>過去のキャスト：</b>
+                            </td>
+                            <td>
+                                <input id="pastCvInput" type="text" />
+                            </td>
+                            <td>
+                                <span>※部分入力可</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>出身地：</b>
+                            </td>
+                            <td>
+                                <input id="birthPlaceInput" type="text" />
+                            </td>
+                            <td>
+                                <span>※部分入力可</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>趣味：</b>
+                            </td>
+                            <td>
+                                <input id="hobbyInput" type="text" />
+                            </td>
+                            <td>
+                                <span>※部分入力可</span>
+                            </td>
+                            <td>
+                                <b>好きなもの・こと：</b>
+                            </td>
+                            <td>
+                                <input id="favoriteInput" type="text" />
+                            </td>
+                            <td>
+                                <span>※部分入力可</span>
+                            </td>
+                            <td>
+                                <b>特技：</b>
+                            </td>
+                            <td>
+                                <input id="talentInput" type="text" />
+                            </td>
+                            <td>
+                                <span>※部分入力可</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>説明：</b>
+                            </td>
+                            <td>
+                                <input id="descriptionInput" type="text" />
+                            </td>
+                            <td>
+                                <span>※部分入力可</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div><br />
+                <input type="button" class="btn btn-primary btn-lg" value="アイドル検索" onclick="doIdolSearch();" />
+            </div><br />
             <h3>検索結果</h3>
             <table id="resultTable" class="table table-hover"></table>
         </div>
