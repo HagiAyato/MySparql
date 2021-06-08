@@ -69,8 +69,10 @@ const Query =
 
 
 const conditions = {
-    "name": "text", "cv": "text", "pastCv": "text", "birthPlace": "text", "hobby": "text", "favorite": "text", "talent": "text",
-    "description": "text"
+    "name": "text", "title": "text", "division": "text", "popLinksAttribute": "text", "cv": "text", "pastCv": "text",
+    "age": "number", "gender": "gender",　"height": "number", "weight": "number", "handedness": "handedness",
+    "bust": "number", "waist": "number", "hip": "number", "shoeSize": "number",/*"birthDate": "text",*/ 
+    "constellation": "text", "birthPlace": "text", "hobby": "text", "favorite": "text", "talent": "text", "description": "text"
 }
 
 /**
@@ -82,7 +84,33 @@ function doIdolSearch() {
     for (const [key, value] of Object.entries(conditions)) {
         const inputVal = $("#" + key + "Input").val();
         if (inputVal == "") continue;
-        search1 = search1 + " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
+        switch (value) {
+            case "number":
+                // 数値
+                if (isNaN(inputVal)) {
+                    // 数値にできないtextの場合
+                    // 永遠の17歳、ダイエットちゅう、ぼんっ、きゅっ、ぼんっ♪…の対策
+                    search1 = search1 + " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
+                } else {
+                    // 数値の場合
+                    search1 = search1 + " && ?" + key + "=" + escapeForSparql(inputVal) + "";
+                }
+                break;
+            case "gender":
+                // 性別
+                search1 = search1 + " && ?" + key + "='" + escapeForSparql(
+                    (inputVal == "男性" ? "male" : (inputVal == "女性" ? "female" : inputVal))) + "'";
+                break;
+            case "handedness":
+                // 利き手
+                search1 = search1 + " && ?" + key + "='" + escapeForSparql(
+                    (inputVal == "右利き" ? "right" : (inputVal == "左利き" ? "left" : (inputVal == "両利き" ? "both" : inputVal)))) + "'";
+                break;
+            default:
+                // 基本はtextの場合
+                search1 = search1 + " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
+                break;
+        }
     }
     // URL、クエリ結合
     const urlQuery = URL + encodeURIComponent(Query[0] + search1 + Query[1] + Query[2] + search1 + Query[1] + Query[3]);
