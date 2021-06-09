@@ -24,6 +24,19 @@ function dispElement(btnId, elementId, btnText) {
         $(btnId).text(btnText + '表示▼');
         $(elementId).attr('style', 'display:none');
     }
+
+}
+
+/**
+ * 要素の有効無効切替
+ * @param {boolean} isEnable 有効無効
+ * @param {...string} target 対象要素(複数指定可能)
+ */
+function changeEnable(isEnable, ...target) {
+    target.forEach(
+        function (item, index) {
+            $("#" + item).prop("disabled", !isEnable);
+        });
 }
 
 /**
@@ -41,7 +54,7 @@ function escapeForSparql(param) {
 /**
  * Sparqlクエリ実行関数
  * @param {String} url 実行URL(URL+クエリ)
- * @returns 
+ * @returns Promise
  */
 var promiseSparqlRequest = function (url) {
     return new Promise(function (resolve, reject) {

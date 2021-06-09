@@ -67,11 +67,10 @@ const Query =
         + "GROUP BY ?s ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL "
         + "ORDER BY ?iName"];
 
-
 const conditions = {
     "name": "text", "title": "text", "division": "text", "popLinksAttribute": "text", "cv": "text", "pastCv": "text",
-    "age": "number", "gender": "gender",　"height": "number", "weight": "number", "handedness": "handedness",
-    "bust": "number", "waist": "number", "hip": "number", "shoeSize": "number",/*"birthDate": "text",*/ 
+    "age": "number", "gender": "gender", "height": "number", "weight": "number", "handedness": "handedness",
+    "bust": "number", "waist": "number", "hip": "number", "shoeSize": "number", "birthDate": "birthDate",
     "constellation": "text", "birthPlace": "text", "hobby": "text", "favorite": "text", "talent": "text", "description": "text"
 }
 
@@ -79,6 +78,8 @@ const conditions = {
  * 検索処理本体
  */
 function doIdolSearch() {
+    // 検索ボタン無効化
+    changeEnable(false, "BTNIdolSearch");
     // クエリビルド
     let search1 = "";
     for (const [key, value] of Object.entries(conditions)) {
@@ -93,11 +94,12 @@ function doIdolSearch() {
                     search1 = search1 + " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
                 } else {
                     // 数値の場合
-                    search1 = search1 + " && ?" + key + "=" + escapeForSparql(inputVal) + "";
+                    search1 = search1 + " && ?" + key + "=" + inputVal + "";
                 }
                 break;
             case "gender":
                 // 性別
+                // 将来的にLGBTや男の娘が出てくることを考慮
                 search1 = search1 + " && ?" + key + "='" + escapeForSparql(
                     (inputVal == "男性" ? "male" : (inputVal == "女性" ? "female" : inputVal))) + "'";
                 break;
@@ -105,6 +107,22 @@ function doIdolSearch() {
                 // 利き手
                 search1 = search1 + " && ?" + key + "='" + escapeForSparql(
                     (inputVal == "右利き" ? "right" : (inputVal == "左利き" ? "left" : (inputVal == "両利き" ? "both" : inputVal)))) + "'";
+                break;
+            case "birthDate":
+                // 誕生日
+                if (inputVal.match(/^(\d+)\/(\d+)/) !== null) {
+                    // mm/ddの場合
+                    const month = inputVal.replace(/^(\d+)\/(\d+)/, "$1");
+                    const day = inputVal.replace(/^(\d+)\/(\d+)/, "$2");
+                    search1 = search1 + " && regex(str(?" + key + "), '--" +
+                        (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day) + "', 'i')";
+                } else if (inputVal.match(/^--(\d+)-(\d+)/)) {
+                    // --mm-ddの場合
+                    search1 = search1 + " && regex(str(?" + key + "), '" + inputVal + "', 'i')";
+                } else {
+                    // 将来的に○○歴xx年mm月dd日のようなパターンが出てくることを考慮
+                    search1 = search1 + " && regex(str(?" + key + "), '" + escapeForSparql(inputVal) + "', 'i')";
+                }
                 break;
             default:
                 // 基本はtextの場合
@@ -136,8 +154,12 @@ function doIdolSearch() {
             );
             index++;
         });
+        // 検索ボタン有効化
+        changeEnable(true, "BTNIdolSearch");
     }).catch(error => {
         // 通信失敗
         alert('エラーが発生しました：' + error);
+        // 検索ボタン有効化
+        changeEnable(true, "BTNIdolSearch");
     });
 }

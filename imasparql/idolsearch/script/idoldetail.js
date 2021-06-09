@@ -12,8 +12,9 @@ window.onload = function () {
  * Get the URL parameter value
  * https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
  *
- * @param  name {string} パラメータのキー文字列
- * @return  url {url} 対象のURL文字列（任意）
+ * @param {string} name パラメータのキー文字列
+ * @param {url} url 対象のURL文字列（任意）
+ * @return 引数戻り値
  */
 function getParam(name, url) {
     if (!url) url = window.location.href;

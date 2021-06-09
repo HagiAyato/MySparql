@@ -125,7 +125,7 @@
                                 <input id="bloodTypeInput" type="text" />
                             </td>
                             <td>
-                                <span></span>
+                                <span>○型</span>
                             </td>
                             <td>
                                 <b>年齢：</b>
@@ -216,15 +216,15 @@
                             </td>
                         </tr>
                         <tr>
-                            <!-- <td>
+                            <td>
                                 <b>誕生日：</b>
                             </td>
                             <td>
-                                <input id="birthDateInput" type="date" />
+                                <input id="birthDateInput" type="text" />
                             </td>
                             <td>
-                                <span></span>
-                            </td> -->
+                                <span>月/日</span>
+                            </td>
                             <td>
                                 <b>星座：</b>
                             </td>
@@ -288,7 +288,8 @@
                         </tr>
                     </table>
                 </div><br />
-                <input type="button" class="btn btn-primary btn-lg" value="アイドル検索" onclick="doIdolSearch();" />
+                <input type="button" id="BTNIdolSearch" class="btn btn-primary btn-lg" value="アイドル検索"
+                    onclick="doIdolSearch();" />
             </div><br />
             <h3>検索結果</h3>
             <table id="resultTable" class="table table-hover"></table>
