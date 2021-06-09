@@ -79,7 +79,7 @@ const Query =
  */
 const conditions = {
     "name": "text", "title": "text", "division": "text", "popLinksAttribute": "text", "cv": "text", "pastCv": "text",
-    "age": "number", "gender": "gender", "height": "number", "weight": "number", "handedness": "handedness",
+    "bloodType": "text", "age": "number", "gender": "gender", "height": "number", "weight": "number", "handedness": "handedness",
     "bust": "number", "waist": "number", "hip": "number", "shoeSize": "number", "birthDate": "birthDate",
     "constellation": "text", "birthPlace": "text", "hobby": "text", "favorite": "text", "talent": "text", "description": "text"
 }
@@ -99,9 +99,17 @@ function doIdolSearch() {
             case "number":
                 // 数値
                 if (isNaN(inputVal)) {
-                    // 数値にできないtextの場合
-                    // 永遠の17歳、ダイエットちゅう、ぼんっ、きゅっ、ぼんっ♪…の対策
-                    search1 = search1 + " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
+                    if (inputVal.match(/^(\d*)~(\d*)$/) !== null) {
+                        // 範囲検索
+                        const from = inputVal.replace(/^(\d*)~(\d*)$/, "$1");
+                        const to = inputVal.replace(/^(\d*)~(\d*)$/, "$2");
+                        search1 = search1 + " && " + Number(from) + "<=?" + key +
+                            " && ?" + key + "<=" + (to.match(/^$/) ? Number.MAX_SAFE_INTEGER : Number(to)) + "";
+                    } else {
+                        // 数値にできないtextの場合
+                        // 永遠の17歳、ダイエットちゅう、ぼんっ、きゅっ、ぼんっ♪…の対策
+                        search1 = search1 + " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
+                    }
                 } else {
                     // 数値の場合
                     search1 = search1 + " && ?" + key + "=" + inputVal + "";
