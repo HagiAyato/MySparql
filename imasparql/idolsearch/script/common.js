@@ -42,13 +42,22 @@ function changeEnable(isEnable, ...target) {
 /**
  * Sparql向けのエスケープ処理
  * @param {string} param エスケープする文字列
- * @returns 
+ * @returns エスケープ処理後の文字列
  */
 function escapeForSparql(param) {
     return param
         .replace(/\\/g, '\\\\\\\\') // バックスラッシュ(正規表現、sparqlで2回エスケープする※2回"\"だとimasa@rql内部エラー)
-        .replace(/'/g, "\\'")
-        .replace(/"/g, '\\"');
+        .replace(/'/g, "\\'") // シングルコーテーション
+        .replace(/"/g, '\\"') // ダブルコーテーション
+        .replace(/\?/g, "\\\\\\\\?") // ?
+        .replace(/\*/g, '\\\\\\\\*') // *
+        .replace(/{/g, "\\\\{") // {
+        .replace(/}/g, '\\\\}') // }
+        .replace(/\(/g, "\\\\(") // (
+        .replace(/\)/g, '\\\\)') // )
+        .replace(/\[/g, "\\\\[") // [
+        .replace(/\]/g, '\\\\]') // ]
+        .replace(/\+/g, '\\\\\\\\+'); // +
 }
 
 /**

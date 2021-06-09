@@ -19,7 +19,14 @@ function initResultTable() {
 }
 
 // 定数定義
+/**
+ * URL
+ */
 const URL = "https://sparql.crssnky.xyz/spql/imas/query?query=";
+
+/**
+ * クエリ
+ */
 const Query =
     [// 1.SELECT
         Query_def
@@ -67,6 +74,9 @@ const Query =
         + "GROUP BY ?s ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL "
         + "ORDER BY ?iName"];
 
+/**
+ * 条件とのその分類
+ */
 const conditions = {
     "name": "text", "title": "text", "division": "text", "popLinksAttribute": "text", "cv": "text", "pastCv": "text",
     "age": "number", "gender": "gender", "height": "number", "weight": "number", "handedness": "handedness",
