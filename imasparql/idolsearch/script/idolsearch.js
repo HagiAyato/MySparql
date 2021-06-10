@@ -39,6 +39,8 @@ const Query =
         // 2,4.各種データ値
         ") . "
         + "  ?s rdf:type ?ctype . FILTER( ?ctype = imas:Idol ) "
+        + "  OPTIONAL { ?s schema:name|schema:givenName|schema:alternateName ?eName. FILTER( lang(?eName) = 'en')} "
+        + "  OPTIONAL { ?s imas:nameKana|imas:givenNameKana|imas:alternateNameKana ?nameKana. } "
         + "  OPTIONAL { ?s imas:Brand ?title. } "
         + "  OPTIONAL { ?s imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) } "
         + "  OPTIONAL { ?s imas:pastCv ?pastCv . FILTER( lang(?pastCv) = 'ja' ) } "
@@ -60,7 +62,7 @@ const Query =
         + "  OPTIONAL { ?s imas:Favorite ?favorite. } "
         + "  OPTIONAL { ?s imas:Talent ?talent. } "
         + "  OPTIONAL { ?s imas:Color ?color. } "
-        + "  OPTIONAL { ?s imas:PopLinksAttribute ?popLinksAttribute . FILTER( lang(?popLinksAttribute) = 'ja' ) } "
+        + "  OPTIONAL { ?s imas:PopLinksAttribute ?popLinksAttribute . } "
         + "  OPTIONAL { ?s schema:description ?description . } "
         + "  OPTIONAL { ?s imas:IdolListURL ?idolListURL . } ",
         // 3.UNION～名前のみ検索
@@ -78,7 +80,7 @@ const Query =
  * 条件とのその分類
  */
 const conditions = {
-    "name": "text", "title": "text", "division": "text", "popLinksAttribute": "text", "cv": "text", "pastCv": "text",
+    "name": "name", "title": "text", "division": "text", "popLinksAttribute": "text", "cv": "text", "pastCv": "text",
     "bloodType": "text", "age": "number", "gender": "gender", "height": "number", "weight": "number", "handedness": "handedness",
     "bust": "number", "waist": "number", "hip": "number", "shoeSize": "number", "birthDate": "birthDate",
     "constellation": "text", "birthPlace": "text", "hobby": "text", "favorite": "text", "talent": "text", "description": "text"
@@ -96,6 +98,12 @@ function doIdolSearch() {
         const inputVal = $("#" + key + "Input").val();
         if (inputVal == "") continue;
         switch (value) {
+            case "name":
+                // 英語名・ひらがな対応
+                search1 = search1 + " && (regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i') "
+                    + "|| regex(?eName, '" + escapeForSparql(inputVal) + "', 'i') "
+                    + "|| regex(?nameKana, '" + escapeForSparql(inputVal) + "', 'i'))";
+                break;
             case "number":
                 // 数値
                 if (isNaN(inputVal)) {
@@ -103,8 +111,8 @@ function doIdolSearch() {
                         // 範囲検索
                         const from = inputVal.replace(/^(\d*)~(\d*)$/, "$1");
                         const to = inputVal.replace(/^(\d*)~(\d*)$/, "$2");
-                        search1 = search1 + " && " + Number(from) + "<=?" + key +
-                            " && ?" + key + "<=" + (to.match(/^$/) ? Number.MAX_SAFE_INTEGER : Number(to)) + "";
+                        search1 = search1 + " && " + Number(from) + "<=?" + key
+                            + " && ?" + key + "<=" + (to.match(/^$/) ? Number.MAX_SAFE_INTEGER : Number(to)) + "";
                     } else {
                         // 数値にできないtextの場合
                         // 永遠の17歳、ダイエットちゅう、ぼんっ、きゅっ、ぼんっ♪…の対策
@@ -132,8 +140,8 @@ function doIdolSearch() {
                     // mm/ddの場合
                     const month = inputVal.replace(/^(\d+)\/(\d+)/, "$1");
                     const day = inputVal.replace(/^(\d+)\/(\d+)/, "$2");
-                    search1 = search1 + " && regex(str(?" + key + "), '--" +
-                        (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day) + "', 'i')";
+                    search1 = search1 + " && regex(str(?" + key + "), '--"
+                        + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day) + "', 'i')";
                 } else if (inputVal.match(/^--(\d+)-(\d+)/)) {
                     // --mm-ddの場合
                     search1 = search1 + " && regex(str(?" + key + "), '" + inputVal + "', 'i')";
