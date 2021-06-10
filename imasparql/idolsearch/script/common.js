@@ -76,8 +76,8 @@ var promiseSparqlRequest = function (url) {
         request.addEventListener("load", (e) => {
             // サーバでの処理失敗判定
             if (e.target.status != 200) {
-                console.log(e.target.status + ':' + e.target.statusText);
-                reject("検索に失敗しました。");
+                console.log('[' + e.target.status + ']' + e.target.statusText);
+                reject("検索に失敗しました。[" + e.target.status + '] Error');
                 return;
             }
             resolve(JSON.parse(e.target.responseText)["results"]["bindings"]);
@@ -86,6 +86,11 @@ var promiseSparqlRequest = function (url) {
         request.addEventListener("error", () => {
             console.log("Http Request Error");
             reject("通信に失敗しました。");
+        });
+        // 通信失敗
+        request.addEventListener("timeout", () => {
+            console.log("Http Request Timeout");
+            reject("通信がタイムアウトしました。");
         });
     });
 }

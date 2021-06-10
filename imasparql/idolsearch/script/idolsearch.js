@@ -42,29 +42,7 @@ const Query =
         + "  OPTIONAL { ?s schema:name|schema:givenName|schema:alternateName ?eName. FILTER( lang(?eName) = 'en')} "
         + "  OPTIONAL { ?s imas:nameKana|imas:givenNameKana|imas:alternateNameKana ?nameKana. } "
         + "  OPTIONAL { ?s imas:Brand ?title. } "
-        + "  OPTIONAL { ?s imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) } "
-        + "  OPTIONAL { ?s imas:pastCv ?pastCv . FILTER( lang(?pastCv) = 'ja' ) } "
-        + "  OPTIONAL { ?s imas:Division | imas:Type | imas:Category ?division. } "
-        + "  OPTIONAL { ?s imas:BloodType ?bloodType . } "
-        + "  OPTIONAL { ?s foaf:age ?age . } "
-        + "  OPTIONAL { ?s schema:gender ?gender . } "
-        + "  OPTIONAL { ?s schema:height ?height . } "
-        + "  OPTIONAL { ?s schema:weight ?weight . } "
-        + "  OPTIONAL { ?s imas:Handedness ?handedness. } "
-        + "  OPTIONAL { ?s imas:Bust ?bust. } "
-        + "  OPTIONAL { ?s imas:Waist ?waist. } "
-        + "  OPTIONAL { ?s imas:Hip ?hip. } "
-        + "  OPTIONAL { ?s imas:ShoeSize ?shoeSize. } "
-        + "  OPTIONAL { ?s schema:birthDate ?birthDate . } "
-        + "  OPTIONAL { ?s imas:Constellation ?constellation. } "
-        + "  OPTIONAL { ?s schema:birthPlace ?birthPlace . } "
-        + "  OPTIONAL { ?s imas:Hobby ?hobby. } "
-        + "  OPTIONAL { ?s imas:Favorite ?favorite. } "
-        + "  OPTIONAL { ?s imas:Talent ?talent. } "
-        + "  OPTIONAL { ?s imas:Color ?color. } "
-        + "  OPTIONAL { ?s imas:PopLinksAttribute ?popLinksAttribute . } "
-        + "  OPTIONAL { ?s schema:description ?description . } "
-        + "  OPTIONAL { ?s imas:IdolListURL ?idolListURL . } ",
+        + "  OPTIONAL { ?s imas:IdolListURL ?idolListURL. } ",
         // 3.UNION～名前のみ検索
         "  }UNION{"
         + "  FILTER NOT EXISTS {?s schema:name|schema:alternateName ?fname} "
@@ -73,17 +51,45 @@ const Query =
         // 5.集約とソート
         "  }"
         + "}"
-        + "GROUP BY ?s ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL "
+        + "GROUP BY ?s ?idolListURL "
         + "ORDER BY ?iName"];
 
 /**
  * 条件とのその分類
  */
 const conditions = {
-    "name": "name", "title": "text", "division": "text", "popLinksAttribute": "text", "cv": "text", "pastCv": "text",
+    "name": "name", "title": "title", "division": "text", "popLinksAttribute": "text", "cv": "text", "pastCv": "text",
     "bloodType": "text", "age": "number", "gender": "gender", "height": "number", "weight": "number", "handedness": "handedness",
     "bust": "number", "waist": "number", "hip": "number", "shoeSize": "number", "birthDate": "birthDate",
     "constellation": "text", "birthPlace": "text", "hobby": "text", "favorite": "text", "talent": "text", "description": "text"
+}
+
+/**
+ * 条件検索用クエリ
+ */
+const conditionQueries = {
+    "cv": "  OPTIONAL { ?s imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) } ",
+    "pastCv": "  OPTIONAL { ?s imas:pastCv ?pastCv . FILTER( lang(?pastCv) = 'ja' ) } ",
+    "division": "  OPTIONAL { ?s imas:Division | imas:Type | imas:Category ?division. } ",
+    "bloodType": "  OPTIONAL { ?s imas:BloodType ?bloodType. } ",
+    "age": "  OPTIONAL { ?s foaf:age ?age. } ",
+    "gender": "  OPTIONAL { ?s schema:gender ?gender. } ",
+    "height": "  OPTIONAL { ?s schema:height ?height. } ",
+    "weight": "  OPTIONAL { ?s schema:weight ?weight. } ",
+    "handedness": "  OPTIONAL { ?s imas:Handedness ?handedness. } ",
+    "bust": "  OPTIONAL { ?s imas:Bust ?bust. } ",
+    "waist": "  OPTIONAL { ?s imas:Waist ?waist. } ",
+    "hip": "  OPTIONAL { ?s imas:Hip ?hip. } ",
+    "shoeSize": "  OPTIONAL { ?s imas:ShoeSize ?shoeSize. } ",
+    "birthDate": "  OPTIONAL { ?s schema:birthDate ?birthDate . } ",
+    "constellation": "  OPTIONAL { ?s imas:Constellation ?constellation. } ",
+    "birthPlace": "  OPTIONAL { ?s schema:birthPlace ?birthPlace . } ",
+    "hobby": "  OPTIONAL { ?s imas:Hobby ?hobby. } ",
+    "favorite": "  OPTIONAL { ?s imas:Favorite ?favorite. } ",
+    "talent": "  OPTIONAL { ?s imas:Talent ?talent. } ",
+    "color": "  OPTIONAL { ?s imas:Color ?color. } ",
+    "popLinksAttribute": "  OPTIONAL { ?s imas:PopLinksAttribute ?popLinksAttribute . } ",
+    "description": "  OPTIONAL { ?s schema:description ?description . } ",
 }
 
 /**
@@ -94,13 +100,14 @@ function doIdolSearch() {
     changeEnable(false, "BTNIdolSearch");
     // クエリビルド
     let search1 = "";
+    let search2 = "";
     for (const [key, value] of Object.entries(conditions)) {
         const inputVal = $("#" + key + "Input").val();
         if (inputVal == "") continue;
         switch (value) {
             case "name":
                 // 英語名・ひらがな対応
-                search1 = search1 + " && (regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i') "
+                search1 += " && (regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i') "
                     + "|| regex(?eName, '" + escapeForSparql(inputVal) + "', 'i') "
                     + "|| regex(?nameKana, '" + escapeForSparql(inputVal) + "', 'i'))";
                 break;
@@ -111,28 +118,35 @@ function doIdolSearch() {
                         // 範囲検索
                         const from = inputVal.replace(/^(\d*)~(\d*)$/, "$1");
                         const to = inputVal.replace(/^(\d*)~(\d*)$/, "$2");
-                        search1 = search1 + " && " + Number(from) + "<=?" + key
+                        search1 += " && " + Number(from) + "<=?" + key
                             + " && ?" + key + "<=" + (to.match(/^$/) ? Number.MAX_SAFE_INTEGER : Number(to)) + "";
                     } else {
                         // 数値にできないtextの場合
                         // 永遠の17歳、ダイエットちゅう、ぼんっ、きゅっ、ぼんっ♪…の対策
-                        search1 = search1 + " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
+                        search1 += " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
                     }
                 } else {
                     // 数値の場合
-                    search1 = search1 + " && ?" + key + "=" + inputVal + "";
+                    search1 += " && ?" + key + "=" + inputVal + "";
                 }
+                search2 += conditionQueries[key];
                 break;
+            case "title":
+                    // タイトル(ブランド名)
+                    search1 += " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
+                    break;
             case "gender":
                 // 性別
                 // 将来的にLGBTや男の娘が出てくることを考慮
-                search1 = search1 + " && ?" + key + "='" + escapeForSparql(
+                search1 += " && ?" + key + "='" + escapeForSparql(
                     (inputVal == "男性" ? "male" : (inputVal == "女性" ? "female" : inputVal))) + "'";
+                search2 += conditionQueries[key];
                 break;
             case "handedness":
                 // 利き手
-                search1 = search1 + " && ?" + key + "='" + escapeForSparql(
+                search1 += " && ?" + key + "='" + escapeForSparql(
                     (inputVal == "右利き" ? "right" : (inputVal == "左利き" ? "left" : (inputVal == "両利き" ? "both" : inputVal)))) + "'";
+                search2 += conditionQueries[key];
                 break;
             case "birthDate":
                 // 誕生日
@@ -140,24 +154,26 @@ function doIdolSearch() {
                     // mm/ddの場合
                     const month = inputVal.replace(/^(\d+)\/(\d+)/, "$1");
                     const day = inputVal.replace(/^(\d+)\/(\d+)/, "$2");
-                    search1 = search1 + " && regex(str(?" + key + "), '--"
+                    search1 += " && regex(str(?" + key + "), '--"
                         + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day) + "', 'i')";
                 } else if (inputVal.match(/^--(\d+)-(\d+)/)) {
                     // --mm-ddの場合
-                    search1 = search1 + " && regex(str(?" + key + "), '" + inputVal + "', 'i')";
+                    search1 += " && regex(str(?" + key + "), '" + inputVal + "', 'i')";
                 } else {
                     // 将来的に○○歴xx年mm月dd日のようなパターンが出てくることを考慮
-                    search1 = search1 + " && regex(str(?" + key + "), '" + escapeForSparql(inputVal) + "', 'i')";
+                    search1 += " && regex(str(?" + key + "), '" + escapeForSparql(inputVal) + "', 'i')";
                 }
+                search2 += conditionQueries[key];
                 break;
             default:
                 // 基本はtextの場合
-                search1 = search1 + " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
+                search1 += " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
+                search2 += conditionQueries[key];
                 break;
         }
     }
     // URL、クエリ結合
-    const urlQuery = URL + encodeURIComponent(Query[0] + search1 + Query[1] + Query[2] + search1 + Query[1] + Query[3]);
+    const urlQuery = URL + encodeURIComponent(Query[0] + search1 + Query[1] + search2 + Query[2] + search1 + Query[1] + search2 + Query[3]);
     // 通信実行
     promiseSparqlRequest(urlQuery).then(json => {
         // 通信成功
@@ -180,12 +196,20 @@ function doIdolSearch() {
             );
             index++;
         });
-        // 検索ボタン有効化
-        changeEnable(true, "BTNIdolSearch");
     }).catch(error => {
         // 通信失敗
         alert('エラーが発生しました：' + error);
+    }).finally(v => {
         // 検索ボタン有効化
         changeEnable(true, "BTNIdolSearch");
     });
 }
+
+/**
+ * 検索詳細条件削除
+ */
+ function deleteConditions(){
+    for (const [key, value] of Object.entries(conditions)) {
+        $("#" + key + "Input").val("");
+    }
+ }
