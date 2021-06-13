@@ -39,13 +39,15 @@ const Query =
         // 2,4.各種データ値
         ") . "
         + "  ?s rdf:type ?ctype . FILTER( ?ctype = imas:Idol ) "
-        + "  OPTIONAL { ?s schema:name|schema:givenName|schema:alternateName ?eName. FILTER( lang(?eName) = 'en')} "
-        + "  OPTIONAL { ?s imas:nameKana|imas:givenNameKana|imas:alternateNameKana ?nameKana. } "
+        + "  OPTIONAL { ?s schema:name|schema:alternateName ?eName. FILTER( lang(?eName) = 'en')} "
+        + "  OPTIONAL { ?s imas:nameKana|imas:alternateNameKana ?nameKana. } "
         + "  OPTIONAL { ?s imas:Brand ?title. } "
         + "  OPTIONAL { ?s imas:IdolListURL ?idolListURL. } ",
         // 3.UNION～名前のみ検索
         "  }UNION{"
         + "  FILTER NOT EXISTS {?s schema:name|schema:alternateName ?fname} "
+        + "  OPTIONAL { ?s schema:givenName ?eName. FILTER( lang(?eName) = 'en')} "
+        + "  OPTIONAL { ?s imas:givenNameKana ?nameKana. } "
         + "  ?s schema:givenName ?name "
         + "    FILTER( lang(?name) = 'ja' ",
         // 5.集約とソート
@@ -132,9 +134,9 @@ function doIdolSearch() {
                 search2 += conditionQueries[key];
                 break;
             case "title":
-                    // タイトル(ブランド名)
-                    search1 += " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
-                    break;
+                // タイトル(ブランド名)
+                search1 += " && regex(?" + key + ", '" + escapeForSparql(inputVal) + "', 'i')";
+                break;
             case "gender":
                 // 性別
                 // 将来的にLGBTや男の娘が出てくることを考慮
@@ -158,7 +160,10 @@ function doIdolSearch() {
                         + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day) + "', 'i')";
                 } else if (inputVal.match(/^--(\d+)-(\d+)/)) {
                     // --mm-ddの場合
-                    search1 += " && regex(str(?" + key + "), '" + inputVal + "', 'i')";
+                    const month = inputVal.replace(/^--(\d+)-(\d+)/, "$1");
+                    const day = inputVal.replace(/^--(\d+)-(\d+)/s, "$2");
+                    search1 += " && regex(str(?" + key + "), '--"
+                        + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day) + "', 'i')";
                 } else {
                     // 将来的に○○歴xx年mm月dd日のようなパターンが出てくることを考慮
                     search1 += " && regex(str(?" + key + "), '" + escapeForSparql(inputVal) + "', 'i')";
@@ -208,8 +213,8 @@ function doIdolSearch() {
 /**
  * 検索詳細条件削除
  */
- function deleteConditions(){
+function deleteConditions() {
     for (const [key, value] of Object.entries(conditions)) {
         $("#" + key + "Input").val("");
     }
- }
+}
