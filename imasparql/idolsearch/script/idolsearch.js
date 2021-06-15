@@ -182,6 +182,8 @@ function doIdolSearch() {
     // 通信実行
     promiseSparqlRequest(urlQuery).then(json => {
         // 通信成功
+        // 件数表示
+        $("#lenResult").text(Object.keys(json).length);
         // 一度divの中身を空にする
         $("#resultTable tr").remove();
         // ヘッダ挿入
