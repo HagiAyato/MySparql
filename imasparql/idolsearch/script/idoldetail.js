@@ -6,6 +6,7 @@ window.onload = function () {
     if (Subject == null || Subject == "") location.href = "/MySparql/imasparql/idolsearch/";
     // アイドル詳細読み込み
     doIdolDetail(Subject);
+    doIdolColl(Subject);
 }
 
 /**
@@ -27,7 +28,7 @@ function getParam(name, url) {
 }
 
 /**
- * 検索結果初期化
+ * 詳細表示初期化
  */
 function initResultTable() {
     $("#resultTable").append(
@@ -38,8 +39,7 @@ function initResultTable() {
 }
 
 // 定数定義
-const URL = "https://sparql.crssnky.xyz/spql/imas/query?query=";
-const Query =
+const QUERY_DETAIL =
     [// 1.定義
         Query_def
         + "PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/",
@@ -104,20 +104,20 @@ const Query =
 const request = new XMLHttpRequest();
 
 /**
- * 検索処理本体
+ * 詳細表示処理1
  * @param {String} Subject 主語 
  */
 function doIdolDetail(Subject) {
     // クエリビルド
     const search1 = escapeForSparql(Subject);
     // URL、クエリ結合
-    const urlQuery = URL + encodeURIComponent(Query[0] + search1 + Query[1] + Query[2] + Query[4]);
+    const urlQuery = ADDRESS + encodeURIComponent(QUERY_DETAIL[0] + search1 + QUERY_DETAIL[1] + QUERY_DETAIL[2] + QUERY_DETAIL[4]);
     // 通信実行
     promiseSparqlRequest(urlQuery).then(json => {
         // 通信成功
         if (Object.keys(json).length < 1) {
             // 名前のみでもう一回検索
-            const urlQuery2 = URL + encodeURIComponent(Query[0] + search1 + Query[1] + Query[3] + Query[4]);
+            const urlQuery2 = ADDRESS + encodeURIComponent(QUERY_DETAIL[0] + search1 + QUERY_DETAIL[1] + QUERY_DETAIL[3] + QUERY_DETAIL[4]);
             // 通信実行
             promiseSparqlRequest(urlQuery2).then(json => {
                 showDetail(json);
@@ -134,6 +134,10 @@ function doIdolDetail(Subject) {
     });
 }
 
+/**
+ * 詳細表示処理2
+ * @param {json} json アイドルデータ
+ */
 function showDetail(json) {
     // 一度divの中身を空にする
     $("#resultTable tr").remove();
@@ -225,5 +229,58 @@ function showDetail(json) {
                     break;
             }
         }
+    });
+}
+
+// 定数定義
+const QUERY_CALL =
+    [Query_def + "PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/> "
+        + "SELECT ?name1 ?name2 (group_concat(DISTINCT ?called; separator = ', ') as ?call) "
+        + "WHERE { "
+        + "  ?s rdf:type imas:CallName. "
+        + "  ?s imas:Source idol:",
+    ". "
+    + "  ?s imas:Source ?caller. "
+    + "  ?s imas:Destination ?callee. "
+    + "  ?s imas:Called ?called. "
+    + "  ?caller schema:name ?name1 FILTER( lang(?name1) = 'ja'). "
+    + "  ?callee schema:name ?name2 FILTER( lang(?name2) = 'ja'). "
+    + "} "
+    + "GROUP BY ?name1 ?name2 "
+    + "ORDER BY ?name2 "];
+
+
+/**
+ * アイドル呼称表示初期化
+ */
+ function initResultTable() {
+    $("#callTable").append(
+        $("<tr></tr>")
+            .append($("<th></th>").text("呼ぶアイドル"))
+            .append($("<th></th>").text("呼称"))
+    );
+}
+
+/**
+ * アイドル呼称表示処理1
+ * @param {String} Subject 主語 
+ */
+function doIdolColl(Subject) {
+    // クエリビルド
+    const search1 = escapeForSparql(Subject);
+    // URL、クエリ結合
+    const urlQuery = ADDRESS + encodeURIComponent(QUERY_CALL[0] + search1 + QUERY_CALL[1]);
+    promiseSparqlRequest(urlQuery).then(json => {
+        // 通信成功
+        json.forEach(i => {
+            $("#callTable").append(
+                $("<tr></tr>")
+                    .append($("<th></th>").text(i["name2"]["value"]))
+                    .append($("<td></td>").text(i["call"]["value"]))
+            );
+        });
+    }).catch(error => {
+        // 通信失敗
+        alert('エラーが発生しました：' + error);
     });
 }

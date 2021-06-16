@@ -19,10 +19,6 @@ function initResultTable() {
 }
 
 // 定数定義
-/**
- * URL
- */
-const URL = "https://sparql.crssnky.xyz/spql/imas/query?query=";
 
 /**
  * クエリ
@@ -178,7 +174,7 @@ function doIdolSearch() {
         }
     }
     // URL、クエリ結合
-    const urlQuery = URL + encodeURIComponent(Query[0] + search1 + Query[1] + search2 + Query[2] + search1 + Query[1] + search2 + Query[3]);
+    const urlQuery = ADDRESS + encodeURIComponent(Query[0] + search1 + Query[1] + search2 + Query[2] + search1 + Query[1] + search2 + Query[3]);
     // 通信実行
     promiseSparqlRequest(urlQuery).then(json => {
         // 通信成功

@@ -3,6 +3,7 @@
 /**
  * クエリの定義共通部分
  */
+const ADDRESS = "https://sparql.crssnky.xyz/spql/imas/query?query=";
 const Query_def = "PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>"
     + "PREFIX schema: <http://schema.org/>"
     + "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"

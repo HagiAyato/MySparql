@@ -21,7 +21,9 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
     <!-- Bootstrap JS -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
 
     <!-- トグルスイッチプラグイン -->
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
@@ -58,8 +60,27 @@
             -->
         </div>
         <h3 id="idolName">アイドル詳細</h3>
+        <ul class="nav nav-tabs" id="idolTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab"
+                    aria-controls="profile" aria-selected="true">プロフィール</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="call-tab" data-bs-toggle="tab" href="#call" role="tab"
+                    aria-controls="call" aria-selected="false">他アイドルへの呼称</a>
+            </li>
+        </ul>
         <div class="table-responsive">
-            <table id="resultTable" class="table table-responsive"></table>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <!-- ここの中身を入れ替える -->
+                    <table id="resultTable" class="table table-responsive"></table>
+                </div>
+                <div class="tab-pane fade" id="call" role="tabpanel" aria-labelledby="call-tab">
+                    <!-- ここの中身を入れ替える -->
+                    <table id="callTable" class="table table-responsive"></table>
+                </div>
+            </div>
         </div>
         <a href="/MySparql/imasparql/idolsearch/">アイドル一覧</a>
     </div>

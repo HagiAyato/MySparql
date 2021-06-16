@@ -1,0 +1,17 @@
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>
+PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/>
+
+SELECT ?name1 ?caller ?name2 (group_concat(DISTINCT ?called; separator = ', ') as ?call)
+WHERE {
+  ?s rdf:type imas:CallName.
+  ?s imas:Source idol:Nanao_Yuriko.
+  ?s imas:Source ?caller.
+  ?s imas:Destination ?callee.
+  ?s imas:Called ?called.
+  ?caller schema:name ?name1 FILTER( lang(?name1) = 'ja').
+  ?callee schema:name ?name2 FILTER( lang(?name2) = 'ja').
+}
+GROUP BY ?name1 ?caller ?name2
+ORDER BY ?name2 ?caller
