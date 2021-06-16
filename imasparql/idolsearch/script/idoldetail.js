@@ -277,7 +277,7 @@ function doIdolColl(Subject) {
                 $("<tr></tr>")
                     .append($("<th></th>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?s="
                         + i["callee"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
-                        + "' target='_blank'>" + i["name2"]["value"] + "</a>"))
+                        + "' >" + i["name2"]["value"] + "</a>"))
                     .append($("<td></td>").text(i["call"]["value"]))
             );
         });
