@@ -66,8 +66,16 @@
                     aria-controls="profile" aria-selected="true">プロフィール</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="call-tab" data-bs-toggle="tab" href="#call" role="tab"
-                    aria-controls="call" aria-selected="false">他アイドルへの呼称</a>
+                <a class="nav-link" id="call-tab" data-bs-toggle="tab" href="#call" role="tab" aria-controls="call"
+                    aria-selected="false">他アイドルへの呼称</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="unit-tab" data-bs-toggle="tab" href="#unit" role="tab" aria-controls="unit"
+                    aria-selected="false">参加ユニット</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="clothes-tab" data-bs-toggle="tab" href="#clothes" role="tab"
+                    aria-controls="clothes" aria-selected="false">衣装</a>
             </li>
         </ul>
         <div class="table-responsive">
@@ -79,6 +87,14 @@
                 <div class="tab-pane fade" id="call" role="tabpanel" aria-labelledby="call-tab">
                     <!-- ここの中身を入れ替える -->
                     <table id="callTable" class="table table-responsive"></table>
+                </div>
+                <div class="tab-pane fade" id="unit" role="tabpanel" aria-labelledby="unit-tab">
+                    <!-- ここの中身を入れ替える -->
+                    <table id="unitTable" class="table table-responsive"></table>
+                </div>
+                <div class="tab-pane fade" id="clothes" role="tabpanel" aria-labelledby="clothes-tab">
+                    <!-- ここの中身を入れ替える -->
+                    <table id="clothesTable" class="table table-responsive"></table>
                 </div>
             </div>
         </div>

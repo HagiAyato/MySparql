@@ -7,6 +7,8 @@ window.onload = function () {
     // アイドル詳細読み込み
     doIdolDetail(Subject);
     doIdolColl(Subject);
+    doIdolUnit(Subject);
+    doIdolClothes(Subject);
 }
 
 /**
@@ -249,13 +251,13 @@ const QUERY_CALL =
     + "GROUP BY ?name1 ?name2 ?callee "
     + "ORDER BY ?name2 "];
 
-
 /**
  * アイドル呼称表示初期化
  */
-function initResultTable() {
+function initCallTable() {
     $("#callTable").append(
         $("<tr></tr>")
+            .append($("<th></th>").text("№"))
             .append($("<th></th>").text("呼ぶアイドル"))
             .append($("<th></th>").text("呼称"))
     );
@@ -272,14 +274,130 @@ function doIdolColl(Subject) {
     const urlQuery = ADDRESS + encodeURIComponent(QUERY_CALL[0] + search1 + QUERY_CALL[1]);
     promiseSparqlRequest(urlQuery).then(json => {
         // 通信成功
+        // ヘッダ挿入
+        initCallTable();
+        // 戻り値を表に入れる
+        let index = 1;
         json.forEach(i => {
             $("#callTable").append(
                 $("<tr></tr>")
-                    .append($("<th></th>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?s="
+                    .append($("<th></th>").text(index))
+                    .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?s="
                         + i["callee"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
                         + "' >" + i["name2"]["value"] + "</a>"))
                     .append($("<td></td>").text(i["call"]["value"]))
             );
+            index++;
+        });
+    }).catch(error => {
+        // 通信失敗
+        alert('エラーが発生しました：' + error);
+    });
+}
+
+// 定数定義
+const QUERY_UNIT =
+    [Query_def + "PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/> "
+        + "SELECT ?s ?name "
+        + "WHERE { "
+        + "  ?s rdf:type imas:Unit. "
+        + "  ?s schema:member idol:",
+    ". "
+    + "  ?s schema:name ?name. "
+    + "} "
+    + "ORDER BY ?name "];
+
+/**
+ * ユニット名表示初期化
+ */
+function initUnitTable() {
+    $("#unitTable").append(
+        $("<tr></tr>")
+            .append($("<th></th>").text("№"))
+            .append($("<th></th>").text("ユニット名"))
+    );
+}
+
+/**
+ * ユニット名表示処理1
+ * @param {String} Subject 主語 
+ */
+function doIdolUnit(Subject) {
+    // クエリビルド
+    const search1 = escapeForSparql(Subject);
+    // URL、クエリ結合
+    const urlQuery = ADDRESS + encodeURIComponent(QUERY_UNIT[0] + search1 + QUERY_UNIT[1]);
+    promiseSparqlRequest(urlQuery).then(json => {
+        // 通信成功
+        // ヘッダ挿入
+        initUnitTable();
+        // 戻り値を表に入れる
+        let index = 1;
+        json.forEach(i => {
+            $("#unitTable").append(
+                $("<tr></tr>")
+                    .append($("<th></th>").text(index))
+                    // .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/unitdetail.html?s="
+                    //     + i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
+                    //     + "' >" + i["name"]["value"] + "</a>"))
+                    .append($("<td></td>").text(i["name"]["value"]))
+            );
+            index++;
+        });
+    }).catch(error => {
+        // 通信失敗
+        alert('エラーが発生しました：' + error);
+    });
+}
+
+// 定数定義
+const QUERY_CLOTHES =
+    [Query_def + "PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/> "
+        + "SELECT ?s ?name "
+        + "WHERE { "
+        + "  ?s rdf:type imas:Clothes. "
+        + "  ?s imas:Whose idol:",
+    ". "
+    + "  ?s schema:name ?name. "
+    + "} "
+    + "ORDER BY ?name "];
+
+/**
+ * 衣装表示初期化
+ */
+function initClothesTable() {
+    $("#clothesTable").append(
+        $("<tr></tr>")
+            .append($("<th></th>").text("№"))
+            .append($("<th></th>").text("衣装名"))
+    );
+}
+
+/**
+ * 衣装表示処理1
+ * @param {String} Subject 主語 
+ */
+function doIdolClothes(Subject) {
+    // クエリビルド
+    const search1 = escapeForSparql(Subject);
+    // URL、クエリ結合
+    const urlQuery = ADDRESS + encodeURIComponent(QUERY_CLOTHES[0] + search1 + QUERY_CLOTHES[1]);
+    promiseSparqlRequest(urlQuery).then(json => {
+        // 通信成功
+        // ヘッダ挿入
+        initClothesTable();
+        // 戻り値を表に入れる
+        let index = 1;
+        json.forEach(i => {
+            $("#clothesTable").append(
+                $("<tr></tr>")
+                    .append($("<th></th>").text(index))
+                    // .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/clothesdetail.html?s="
+                    //     + i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
+                    //     + "' >" + i["name"]["value"] + "</a>"))
+                    .append($("<td></td>").text(i["name"]["value"]))
+            );
+            index++;
         });
     }).catch(error => {
         // 通信失敗

@@ -1,0 +1,12 @@
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>
+PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/>
+
+SELECT ?s ?name 
+WHERE {
+  ?s rdf:type imas:Clothes.
+  ?s imas:Whose idol:Sakuragi_Mano.
+  ?s schema:name ?name.
+}
+ORDER BY ?name
