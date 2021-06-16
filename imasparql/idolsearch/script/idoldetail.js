@@ -235,7 +235,7 @@ function showDetail(json) {
 // 定数定義
 const QUERY_CALL =
     [Query_def + "PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/> "
-        + "SELECT ?name1 ?name2 (group_concat(DISTINCT ?called; separator = ', ') as ?call) "
+        + "SELECT ?callee ?name1 ?name2 (group_concat(DISTINCT ?called; separator = ', ') as ?call) "
         + "WHERE { "
         + "  ?s rdf:type imas:CallName. "
         + "  ?s imas:Source idol:",
@@ -246,14 +246,14 @@ const QUERY_CALL =
     + "  ?caller schema:name ?name1 FILTER( lang(?name1) = 'ja'). "
     + "  ?callee schema:name ?name2 FILTER( lang(?name2) = 'ja'). "
     + "} "
-    + "GROUP BY ?name1 ?name2 "
+    + "GROUP BY ?name1 ?name2 ?callee "
     + "ORDER BY ?name2 "];
 
 
 /**
  * アイドル呼称表示初期化
  */
- function initResultTable() {
+function initResultTable() {
     $("#callTable").append(
         $("<tr></tr>")
             .append($("<th></th>").text("呼ぶアイドル"))
@@ -275,7 +275,9 @@ function doIdolColl(Subject) {
         json.forEach(i => {
             $("#callTable").append(
                 $("<tr></tr>")
-                    .append($("<th></th>").text(i["name2"]["value"]))
+                    .append($("<th></th>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?s="
+                        + i["callee"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
+                        + "' target='_blank'>" + i["name2"]["value"] + "</a>"))
                     .append($("<td></td>").text(i["call"]["value"]))
             );
         });
