@@ -222,6 +222,15 @@ function showDetail(json) {
                             .append($("<td></td>").append("<a href=" + i[item]["value"] + " target='_blank'>Link</a>"))
                     );
                     break;
+                case /^キャスト$/.test(item):
+                    // キャスト
+                    $("#resultTable").append(
+                        $("<tr></tr>")
+                            .append($("<th></th>").text(item))
+                            .append($("<td></td>").append("<a href=https://ja.wikipedia.org/wiki/"
+                                + i[item]["value"] + " target='_blank'>" + i[item]["value"] + "</a>"))
+                    );
+                    break;
                 default:
                     $("#resultTable").append(
                         $("<tr></tr>")

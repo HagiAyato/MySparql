@@ -1,0 +1,36 @@
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>
+PREFIX clothes: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/Glory_Monochrome>
+
+SELECT ?s ?name ?description
+WHERE {
+  clothes: rdf:type imas:Clothes.
+  clothes: schema:name ?name.
+  OPTIONAL { clothes: schema:description ?description } .
+  FILTER( lang(?name) = 'ja' )
+}
+GROUP BY ?s ?name ?description
+ORDER BY ?name
+
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>
+PREFIX clothes: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/Top%21_Clover>
+
+SELECT ?whose group_concat(DISTINCT ?whose_name ; separator = ', ')
+WHERE {
+  {
+    ?whose schema:name|schema:alternateName ?whose_name. FILTER( lang(?whose_name) = 'ja' )
+    clothes: rdf:type imas:Clothes.
+    clothes: imas:Whose ?whose.
+  } UNION {
+    #氏名、代名なしの場合
+    FILTER NOT EXISTS {?whose schema:name|schema:alternateName ?fname}
+    ?whose schema:givenName ?whose_name. FILTER( lang(?whose_name) = 'ja' )
+    clothes: rdf:type imas:Clothes.
+    clothes: imas:Whose ?whose.
+  }
+}
+GROUP BY ?whose
+ORDER BY ?whose

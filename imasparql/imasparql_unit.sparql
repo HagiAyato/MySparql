@@ -1,0 +1,38 @@
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>
+PREFIX unit: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/ZWEIGLANZ>
+
+SELECT ?s ?name ?nameKana ?description group_concat(DISTINCT ?alternateName ; separator = ', ') ?color
+WHERE {
+  unit: rdf:type imas:Unit.
+  unit: schema:name ?name.
+  OPTIONAL { unit: imas:nameKana ?nameKana} .
+  OPTIONAL { unit: schema:description ?description } .
+  OPTIONAL { unit: schema:alternateName ?alternateName} .
+  OPTIONAL { unit: imas:Color ?color. }
+}
+GROUP BY ?s ?name ?nameKana ?description ?color
+ORDER BY ?name
+
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-schema.ttl#>
+PREFIX unit: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/ZWEIGLANZ>
+
+SELECT ?member group_concat(DISTINCT ?member_name ; separator = ', ')
+WHERE {
+  {
+    ?member schema:name|schema:alternateName ?member_name. FILTER( lang(?member_name) = 'ja' )
+    unit: rdf:type imas:Unit.
+    unit: schema:member ?member.
+  } UNION {
+    #氏名、代名なしの場合
+    FILTER NOT EXISTS {?member schema:name|schema:alternateName ?fname}
+    ?member schema:givenName ?member_name. FILTER( lang(?member_name) = 'ja' )
+    unit: rdf:type imas:Unit.
+    unit: schema:member ?member.
+  }
+}
+GROUP BY ?member
+ORDER BY ?member
