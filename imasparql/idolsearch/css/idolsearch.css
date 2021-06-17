@@ -1,0 +1,8 @@
+.table-no-new-line > thead > tr > th,
+.table-no-new-line > tbody > tr > th,
+.table-no-new-line > tfoot > tr > th,
+.table-no-new-line > thead > tr > td,
+.table-no-new-line > tbody > tr > td,
+.table-no-new-line > tfoot > tr > td {
+    white-space: nowrap;
+}
