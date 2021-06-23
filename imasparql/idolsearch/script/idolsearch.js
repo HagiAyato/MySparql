@@ -13,7 +13,8 @@ function initResultTable() {
         $("<tr></tr>")
             .append($("<th></th>").text("№"))
             .append($("<th></th>").text("ブランド"))
-            .append($("<th></th>").text("アイドル名"))
+            .append($("<th></th>").text("アイドル/アイドル以外"))
+            .append($("<th></th>").text("名前"))
             .append($("<th></th>").text("アイドル名鑑(公式)"))
     );
 }
@@ -27,14 +28,14 @@ const Query =
     [// 1.SELECT
         Query_def
         + "SELECT ?s (group_concat(DISTINCT ?title ; separator = ', ') as ?titles) "
-        + "(group_concat(DISTINCT ?name ; separator = ', ') as ?iName) ?idolListURL "
+        + "(group_concat(DISTINCT ?name ; separator = ', ') as ?iName) ?idolListURL ?ctype "
         + "WHERE {"
         + "  {"
         + "  ?s schema:name|schema:alternateName ?name"
         + "    FILTER( lang(?name) = 'ja' ",
         // 2,4.各種データ値
         ") . "
-        + "  ?s rdf:type ?ctype . FILTER( ?ctype = imas:Idol ) "
+        + "  ?s rdf:type ?ctype . FILTER( ?ctype = imas:Idol || ?ctype = imas:Staff ) "
         + "  OPTIONAL { ?s schema:name|schema:alternateName ?eName. FILTER( lang(?eName) = 'en')} "
         + "  OPTIONAL { ?s imas:nameKana|imas:alternateNameKana ?nameKana. } "
         + "  OPTIONAL { ?s imas:Brand ?title. } "
@@ -49,14 +50,14 @@ const Query =
         // 5.集約とソート
         "  }"
         + "}"
-        + "GROUP BY ?s ?idolListURL "
+        + "GROUP BY ?s ?idolListURL ?ctype "
         + "ORDER BY ?iName"];
 
 /**
  * 条件とのその分類
  */
 const conditions = {
-    "name": "name", "title": "title", "division": "text", "popLinksAttribute": "text", "cv": "text", "pastCv": "text",
+    "name": "name", "title": "title", "division": "text", "position": "text", "popLinksAttribute": "text", "cv": "text", "pastCv": "text",
     "bloodType": "text", "age": "number", "gender": "gender", "height": "number", "weight": "number", "handedness": "handedness",
     "bust": "number", "waist": "number", "hip": "number", "shoeSize": "number", "birthDate": "birthDate",
     "constellation": "text", "birthPlace": "text", "hobby": "text", "favorite": "text", "talent": "text", "description": "text"
@@ -69,6 +70,7 @@ const conditionQueries = {
     "cv": "  OPTIONAL { ?s imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) } ",
     "pastCv": "  OPTIONAL { ?s imas:pastCv ?pastCv . FILTER( lang(?pastCv) = 'ja' ) } ",
     "division": "  OPTIONAL { ?s imas:Division | imas:Type | imas:Category ?division. } ",
+    "position": "  OPTIONAL { ?s schema:position ?position . } ",
     "bloodType": "  OPTIONAL { ?s imas:BloodType ?bloodType. } ",
     "age": "  OPTIONAL { ?s foaf:age ?age. } ",
     "gender": "  OPTIONAL { ?s schema:gender ?gender. } ",
@@ -191,6 +193,7 @@ function doIdolSearch() {
                 $("<tr></tr>")
                     .append($("<th></th>").text(index))
                     .append($("<td></td>").text(i["titles"]["value"]))
+                    .append($("<td></td>").text((/Idol/.test(i["ctype"]["value"]) ? "アイドル" : "アイドル以外")))
                     .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?s="
                         + i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
                         + "' target='_blank'>" + i["iName"]["value"] + "</a>"))

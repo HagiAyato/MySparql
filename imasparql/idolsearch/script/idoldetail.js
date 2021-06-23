@@ -50,7 +50,7 @@ const QUERY_DETAIL =
         + "SELECT (group_concat(DISTINCT ?nameKana ; separator = ', ') as ?アイドル名ふりがな) (group_concat(DISTINCT ?name ; separator = ', ') as ?アイドル名)"
         + "  (group_concat(DISTINCT ?eName ; separator = ', ') as ?IDOL_NAME) (group_concat(DISTINCT ?title ; separator = ', ') as ?ブランド) "
         + "  (group_concat(DISTINCT ?cv ; separator = ', ') as ?キャスト) (group_concat(DISTINCT ?pastCv ; separator = ', ') as ?過去のキャスト) "
-        + "  (group_concat(DISTINCT ?division ; separator = ', ') as ?属性) "
+        + "  (group_concat(DISTINCT ?division ; separator = ', ') as ?属性) (group_concat(DISTINCT ?position ; separator = ', ') as ?役職) "
         + "  (?bloodType as ?血液型) (Max(?age) as ?年齢) (group_concat(DISTINCT ?gender ; separator = ', ') as ?性別／gender) "
         + "  (Max(?height) as ?身長_cm) (Max(?weight) as ?体重_kg) "
         + "  (group_concat(DISTINCT ?handedness ; separator = ', ') as ?利き手／handness) "
@@ -59,7 +59,7 @@ const QUERY_DETAIL =
         + "  (group_concat(DISTINCT ?hobby ; separator = ', ') as ?趣味) (group_concat(DISTINCT ?favorite ; separator = ', ') as ?好きなもの・こと) "
         + "  (group_concat(DISTINCT ?talent ; separator = ', ') as ?特技) (?color as ?シンボルカラー) (?idolListURL as ?アイドル名鑑リンク) "
         + "  (group_concat(DISTINCT ?description ; separator = ', ') as ?説明) "
-        + "  (group_concat(DISTINCT ?popLinksAttribute ; separator = ', ') as ?ポプマス属性) (group_concat(DISTINCT ?ePopLinksAttribute ; separator = ', ') as ?POPLINKS_Attribute)"
+        + "  (group_concat(DISTINCT ?popLinksAttribute ; separator = ', ') as ?ポプマス属性) (group_concat(DISTINCT ?ePopLinksAttribute ; separator = ', ') as ?POPLINKS_Attribute) ?ctype "
         + "WHERE { "
         + "  { ",
         // 3A.名前　通常
@@ -72,11 +72,12 @@ const QUERY_DETAIL =
         + "  OPTIONAL { idol: schema:givenName ?eName FILTER( lang(?eName) = 'en') . } "
         + "  OPTIONAL { idol: imas:givenNameKana ?nameKana. } ",
         // 4.各種データ値
-        "  idol: rdf:type ?ctype . FILTER( ?ctype = imas:Idol ) "
+        "  idol: rdf:type ?ctype . FILTER( ?ctype = imas:Idol || ?ctype = imas:Staff ) "
         + "  OPTIONAL { idol: imas:Brand ?title. } "
         + "  OPTIONAL { idol: imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) } "
         + "  OPTIONAL { idol: imas:pastCv ?pastCv . FILTER( lang(?pastCv) = 'ja' ) } "
         + "  OPTIONAL { idol: imas:Division | imas:Type | imas:Category ?division. } "
+        + "  OPTIONAL { idol: schema:position ?position. } "
         + "  OPTIONAL { idol: imas:BloodType ?bloodType . } "
         + "  OPTIONAL { idol: foaf:age ?age . } "
         + "  OPTIONAL { idol: schema:gender ?gender . } "
@@ -100,7 +101,7 @@ const QUERY_DETAIL =
         + "  OPTIONAL { idol: imas:IdolListURL ?idolListURL . } "
         + "  } "
         + "} "
-        + "GROUP BY ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL"];
+        + "GROUP BY ?cv ?bloodType ?birthDate ?constellation ?birthPlace ?color ?idolListURL ?ctype"];
 
 // HTTPリクエスト
 const request = new XMLHttpRequest();
@@ -147,7 +148,7 @@ function showDetail(json) {
     initResultTable();
     // 戻り値を表に入れる
     json.forEach(i => {
-        $("#idolName").text("アイドル詳細[" + i["アイドル名"]["value"] + "]");
+        $("#idolName").text((/Idol/.test(i["ctype"]["value"]) ? "アイドル" : "人物") + "詳細[" + i["アイドル名"]["value"] + "]");
         for (var item in i) {
             // item名称により分岐
             switch (true) {
@@ -230,6 +231,9 @@ function showDetail(json) {
                             .append($("<td></td>").append("<a href=https://ja.wikipedia.org/wiki/"
                                 + i[item]["value"] + " target='_blank'>" + i[item]["value"] + "</a>"))
                     );
+                    break;
+                case /^ctype$/.test(item):
+                    // ctype:表には出さず、ページの文字切替に使用
                     break;
                 default:
                     $("#resultTable").append(
