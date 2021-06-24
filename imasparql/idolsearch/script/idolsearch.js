@@ -58,7 +58,7 @@ const Query =
  */
 const conditions = {
     "name": "name", "title": "title", "division": "text", "position": "text", "popLinksAttribute": "text", "cv": "text", "pastCv": "text",
-    "bloodType": "text", "age": "number", "gender": "gender", "height": "number", "weight": "number", "handedness": "handedness",
+    "bloodType": "textPerfect", "age": "number", "gender": "gender", "height": "number", "weight": "number", "handedness": "handedness",
     "bust": "number", "waist": "number", "hip": "number", "shoeSize": "number", "birthDate": "birthDate",
     "constellation": "text", "birthPlace": "text", "hobby": "text", "favorite": "text", "talent": "text", "description": "text"
 }
@@ -166,6 +166,11 @@ function doIdolSearch() {
                     // 将来的に○○歴xx年mm月dd日のようなパターンが出てくることを考慮
                     search1 += " && regex(str(?" + key + "), '" + escapeForSparql(inputVal) + "', 'i')";
                 }
+                search2 += conditionQueries[key];
+                break;
+            case "textPerfect":
+                // text完全一致
+                search1 += " && ?" + key + "='" + escapeForSparql(inputVal) + "'";
                 search2 += conditionQueries[key];
                 break;
             default:

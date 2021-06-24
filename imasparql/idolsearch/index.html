@@ -52,17 +52,33 @@
 <body>
     <div class="container-fluid">
         <div class="p-1">
-            <!--
-            <button class="btn" id="BTNReadme" onclick="dispReadme();">説明表示▼</button><br />
+            <button class="btn" id="BTNReadme"
+                onclick="dispElement('#BTNReadme', '#readme', '説明');">説明表示▼</button><br />
             <div class="border p-3" id="readme" style="display:none">
-                <h1>説明</h1>
-                <h2>概要</h2>
+                <h3>説明</h3>
+                <h4>概要</h4>
+                アイドルマスターシリーズの人物(アイドル,事務員,社長など…)検索ページ(sparqlのRDB、im@sparqlを使用して実装)<br />
+                <h5>対応ブランド：</h5>
+                <ul>
+                    <li>アイドルマスター(765AS)</li>
+                    <li>アイドルマスターシンデレラガールズ(CinderellaGirls)</li>
+                    <li>アイドルマスターミリオンライブ!(MillionLive)</li>
+                    <li>アイドルマスターsideM(SideM)</li>
+                    <li>アイドルマスターシャイニーカラーズ(ShinyColors)</li>
+                </ul>
+                <h4>使い方</h4>
+                <ol>
+                    <li>検索条件をテキストボックスに入力<br />
+                        ※検索条件として使わない項目は、検索条件欄を未入力にする<br />
+                        ※血液型、性別、利き手以外は部分入力可能</li>
+                        ※身長体重など原則数値入力であるデータについて、文字でも検索可能(例：ダイエットちゅう、たぶんふつう)</li>
+                    <li>”アイドル検索”ボタンを押して、検索処理を実行する</li>
+                    <li>アイドル名をクリックし、アイドルの詳細を確認する</li>
+                </ol>
             </div>
-            -->
         </div>
         <h3>検索フォーム</h3>
         <span>※検索条件として使わない項目は、検索条件欄を未入力にする</span>
-        <!-- table-responsive:スマホ対応 -->
 
         <div class="border p-3">
             <b>氏名：</b>
@@ -70,6 +86,7 @@
             <button id="BTNDetail" class="btn btn-outline-secondary"
                 onclick="dispElement('#BTNDetail', '#detailInput', '検索詳細設定');">検索詳細設定表示▼</button>
             <div class="border p-3" id="detailInput" style="display:none">
+                <!-- table-responsive:スマホ対応 -->
                 <div class="table-responsive">
                     <table class="table-no-new-line">
                         <tr>
