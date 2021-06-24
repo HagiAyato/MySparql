@@ -97,7 +97,10 @@ const conditionQueries = {
  */
 function doIdolSearch() {
     // 検索ボタン無効化
-    changeEnable(false, "BTNIdolSearch");
+    // 削除ボタン無効化
+    changeEnable(false, "BTNIdolSearch", "BTNDeleteConditions");
+    // 検索条件入力無効化
+    changeEnableConditions(false);
     // クエリビルド
     let search1 = "";
     let search2 = "";
@@ -212,7 +215,10 @@ function doIdolSearch() {
         alert('エラーが発生しました：' + error);
     }).finally(v => {
         // 検索ボタン有効化
-        changeEnable(true, "BTNIdolSearch");
+        // 削除ボタン有効化
+        changeEnable(true, "BTNIdolSearch", "BTNDeleteConditions");
+        // 検索条件入力無効化
+        changeEnableConditions(true);
     });
 }
 
@@ -220,7 +226,23 @@ function doIdolSearch() {
  * 検索詳細条件削除
  */
 function deleteConditions() {
+    // 検索ボタン無効化
+    // 削除ボタン無効化
+    changeEnable(false, "BTNIdolSearch", "BTNDeleteConditions");
     for (const [key, value] of Object.entries(conditions)) {
         $("#" + key + "Input").val("");
+    }
+    // 検索ボタン有効化
+    // 削除ボタン有効化
+    changeEnable(true, "BTNIdolSearch", "BTNDeleteConditions");
+}
+
+/**
+ * 検索詳細条件
+ * @param {boolean} isEnable 有効無効
+ */
+ function changeEnableConditions(isEnable) {
+    for (const [key, value] of Object.entries(conditions)) {
+        $("#" + key + "Input").prop("disabled", !isEnable);
     }
 }
