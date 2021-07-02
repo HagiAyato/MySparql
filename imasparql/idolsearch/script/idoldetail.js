@@ -48,7 +48,8 @@ const QUERY_DETAIL =
         // 2.SELECT
         "> "
         + "SELECT (group_concat(DISTINCT ?nameKana ; separator = ', ') as ?アイドル名ふりがな) (group_concat(DISTINCT ?name ; separator = ', ') as ?アイドル名)"
-        + "  (group_concat(DISTINCT ?eName ; separator = ', ') as ?IDOL_NAME) (group_concat(DISTINCT ?title ; separator = ', ') as ?ブランド) "
+        + "  (group_concat(DISTINCT ?eName ; separator = ', ') as ?IDOL_NAME) (group_concat(DISTINCT ?sibling ; separator = ', ') as ?兄弟姉妹) "
+        + "  (group_concat(DISTINCT ?title ; separator = ', ') as ?ブランド) "
         + "  (group_concat(DISTINCT ?cv ; separator = ', ') as ?キャスト) (group_concat(DISTINCT ?pastCv ; separator = ', ') as ?過去のキャスト) "
         + "  (group_concat(DISTINCT ?division ; separator = ', ') as ?属性) (group_concat(DISTINCT ?position ; separator = ', ') as ?役職) "
         + "  (?bloodType as ?血液型) (Max(?age) as ?年齢) (group_concat(DISTINCT ?gender ; separator = ', ') as ?性別／gender) "
@@ -73,6 +74,7 @@ const QUERY_DETAIL =
         + "  OPTIONAL { idol: imas:givenNameKana ?nameKana. } ",
         // 4.各種データ値
         "  idol: rdf:type ?ctype . FILTER( ?ctype = imas:Idol || ?ctype = imas:Staff ) "
+        + "  OPTIONAL { idol: schema:sibling ?sibling. } "
         + "  OPTIONAL { idol: imas:Brand ?title. } "
         + "  OPTIONAL { idol: imas:cv ?cv . FILTER( lang(?cv) = 'ja' ) } "
         + "  OPTIONAL { idol: imas:pastCv ?pastCv . FILTER( lang(?pastCv) = 'ja' ) } "
@@ -230,6 +232,19 @@ function showDetail(json) {
                             .append($("<th></th>").text(item))
                             .append($("<td></td>").append("<a href=https://ja.wikipedia.org/wiki/"
                                 + i[item]["value"] + " target='_blank'>" + i[item]["value"] + "</a>"))
+                    );
+                    break;
+                case /^兄弟姉妹$/.test(item):
+                    // 兄弟姉妹
+                    let tdVal = "";
+                    i[item]["value"].split(', ').forEach(sibling => {
+                        let name = sibling.replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "");
+                        tdVal += "<a href=https://hagiayato.github.io/MySparql/imasparql/idolsearch/detail.html?s=" + name + " >" + name + "</a> ";
+                    });
+                    $("#resultTable").append(
+                        $("<tr></tr>")
+                            .append($("<th></th>").text(item))
+                            .append($("<td></td>").append(tdVal))
                     );
                     break;
                 case /^ctype$/.test(item):
