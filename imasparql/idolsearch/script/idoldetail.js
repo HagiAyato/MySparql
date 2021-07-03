@@ -286,7 +286,7 @@ function initCallTable() {
     $("#callTable").append(
         $("<tr></tr>")
             .append($("<th></th>").text("№"))
-            .append($("<th></th>").text("呼ぶアイドル"))
+            .append($("<th></th>").text("呼ぶアイドル・人物"))
             .append($("<th></th>").text("呼称"))
     );
 }
