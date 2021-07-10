@@ -58,8 +58,8 @@ const Query =
  */
 const conditions = {
     "name": "name", "title": "title", "division": "text", "position": "text", "popLinksAttribute": "text", "cv": "text", "pastCv": "text",
-    "bloodType": "textPerfect", "age": "number", "gender": "gender", "height": "number", "weight": "number", "handedness": "handedness",
-    "bust": "number", "waist": "number", "hip": "number", "shoeSize": "number", "birthDate": "birthDate",
+    "bloodType": "textPerfect", "age": "number", "schoolGrade": "text", "gender": "gender", "height": "number", "weight": "number",
+    "handedness": "handedness", "bust": "number", "waist": "number", "hip": "number", "shoeSize": "number", "birthDate": "birthDate",
     "constellation": "text", "birthPlace": "text", "hobby": "text", "favorite": "text", "talent": "text", "description": "text"
 }
 
@@ -73,6 +73,7 @@ const conditionQueries = {
     "position": "  OPTIONAL { ?s schema:position ?position . } ",
     "bloodType": "  OPTIONAL { ?s imas:BloodType ?bloodType. } ",
     "age": "  OPTIONAL { ?s foaf:age ?age. } ",
+    "schoolGrade": "  OPTIONAL { ?s imas:SchoolGrade ?schoolGrade . } ",
     "gender": "  OPTIONAL { ?s schema:gender ?gender. } ",
     "height": "  OPTIONAL { ?s schema:height ?height. } ",
     "weight": "  OPTIONAL { ?s schema:weight ?weight. } ",
