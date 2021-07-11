@@ -50,7 +50,7 @@ function changeEnable(isEnable, ...target) {
  * @returns エスケープ処理後の文字列
  */
 function escapeForSparql(param) {
-    const converted = param
+    const converted = encodeURIComponent(param)
         .replace(/\\/g, '\\\\\\\\') // バックスラッシュ(正規表現、sparqlで2回エスケープする※2回"\"だとimasa@rql内部エラー)
         .replace(/'/g, "\\'") // シングルコーテーション
         .replace(/"/g, '\\"'); // ダブルコーテーション
