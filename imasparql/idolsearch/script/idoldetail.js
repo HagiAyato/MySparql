@@ -151,7 +151,7 @@ function showDetail(json) {
     initResultTable();
     // 戻り値を表に入れる
     json.forEach(i => {
-        $("#idolName").text((/Idol/.test(i["ctype"]["value"]) ? "アイドル" : "人物") + "詳細[" + i["アイドル名"]["value"] + "]");
+        $("#idolName").text((/Idol/.test(i["ctype"]["value"]) ? "アイドル" : "人物") + "詳細[" + i["名前"]["value"] + "]");
         for (var item in i) {
             // item名称により分岐
             switch (true) {
