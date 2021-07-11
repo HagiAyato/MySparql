@@ -38,6 +38,7 @@ function doClothesDetail(Subject) {
         initDetailTable();
         // 戻り値を表に入れる
         json.forEach(i => {
+            $("#clothesName").text("衣装詳細[" + i["衣装名"]["value"] + "]");
             writeDetailTable(i);
         });
     }).catch(error => {

@@ -41,6 +41,7 @@ function doUnitDetail(Subject) {
         initDetailTable();
         // 戻り値を表に入れる
         json.forEach(i => {
+            $("#unitName").text("ユニット詳細[" + i["ユニット名"]["value"] + "]");
             writeDetailTable(i);
         });
     }).catch(error => {

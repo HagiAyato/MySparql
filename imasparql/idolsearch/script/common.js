@@ -50,7 +50,7 @@ function changeEnable(isEnable, ...target) {
  * @returns エスケープ処理後の文字列
  */
 function escapeForSparql(param) {
-    const converted = encodeURIComponent(param)
+    const converted = param
         .replace(/\\/g, '\\\\\\\\') // バックスラッシュ(正規表現、sparqlで2回エスケープする※2回"\"だとimasa@rql内部エラー)
         .replace(/'/g, "\\'") // シングルコーテーション
         .replace(/"/g, '\\"'); // ダブルコーテーション
@@ -58,11 +58,10 @@ function escapeForSparql(param) {
         // 正規表現構文チェック
         new RegExp(converted);
         // 構文チェック成功->正規表現のまま
-        return converted;
     } catch (e) {
         // 構文チェック失敗
         /* ここから下をやると、エスケープ処理が無効化される(はず) */
-        return converted
+        converted = converted
             .replace(/\?/g, "\\\\?") // ?
             .replace(/\*/g, '\\\\*') // *
             .replace(/{/g, "\\\\{") // {
@@ -73,6 +72,7 @@ function escapeForSparql(param) {
             .replace(/\]/g, '\\\\]') // ]
             .replace(/\+/g, '\\\\+'); // +
     }
+    return encodeURIComponent(converted);
 }
 
 /**
