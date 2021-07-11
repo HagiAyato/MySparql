@@ -421,10 +421,10 @@ function doIdolClothes(Subject) {
             $("#clothesTable").append(
                 $("<tr></tr>")
                     .append($("<th></th>").text(index))
-                    // .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/clothesdetail.html?s="
-                    //     + i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
-                    //     + "' >" + i["name"]["value"] + "</a>"))
-                    .append($("<td></td>").text(i["name"]["value"]))
+                    .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/clothesdetail.html?s="
+                        + i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
+                        + "' >" + i["name"]["value"] + "</a>"))
+                    // .append($("<td></td>").text(i["name"]["value"]))
             );
             index++;
         });
