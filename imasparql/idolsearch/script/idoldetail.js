@@ -47,8 +47,8 @@ const QUERY_DETAIL =
         + "PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/",
         // 2.SELECT
         "> "
-        + "SELECT (group_concat(DISTINCT ?nameKana ; separator = ', ') as ?アイドル名ふりがな) (group_concat(DISTINCT ?name ; separator = ', ') as ?アイドル名)"
-        + "  (group_concat(DISTINCT ?eName ; separator = ', ') as ?名前) (group_concat(DISTINCT ?sibling ; separator = ', ') as ?兄弟姉妹) "
+        + "SELECT (group_concat(DISTINCT ?nameKana ; separator = ', ') as ?名前ふりがな) (group_concat(DISTINCT ?name ; separator = ', ') as ?名前)"
+        + "  (group_concat(DISTINCT ?eName ; separator = ', ') as ?NAME) (group_concat(DISTINCT ?sibling ; separator = ', ') as ?兄弟姉妹) "
         + "  (group_concat(DISTINCT ?title ; separator = ', ') as ?ブランド) "
         + "  (group_concat(DISTINCT ?cv ; separator = ', ') as ?キャスト) (group_concat(DISTINCT ?pastCv ; separator = ', ') as ?過去のキャスト) "
         + "  (group_concat(DISTINCT ?division ; separator = ', ') as ?属性) (group_concat(DISTINCT ?position ; separator = ', ') as ?役職) "
