@@ -11,35 +11,6 @@ window.onload = function () {
     doIdolClothes(Subject);
 }
 
-/**
- * Get the URL parameter value
- * https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
- *
- * @param {string} name パラメータのキー文字列
- * @param {url} url 対象のURL文字列（任意）
- * @return 引数戻り値
- */
-function getParam(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
-
-/**
- * 詳細表示初期化
- */
-function initResultTable() {
-    $("#resultTable").append(
-        $("<tr></tr>")
-            .append($("<th></th>").text("項目"))
-            .append($("<th></th>").text("プロフィール"))
-    );
-}
-
 // 定数定義
 const QUERY_DETAIL =
     [// 1.定義
@@ -146,120 +117,13 @@ function doIdolDetail(Subject) {
  */
 function showDetail(json) {
     // 一度divの中身を空にする
-    $("#resultTable tr").remove();
+    $("#detailTable tr").remove();
     // ヘッダ挿入
-    initResultTable();
+    initDetailTable();
     // 戻り値を表に入れる
     json.forEach(i => {
         $("#idolName").text((/Idol/.test(i["ctype"]["value"]) ? "アイドル" : "人物") + "詳細[" + i["名前"]["value"] + "]");
-        for (var item in i) {
-            // item名称により分岐
-            switch (true) {
-                case /^.+_.+$/.test(item):
-                    // 単位付きデータ
-                    const val = i[item]["value"];
-                    const unit = item.replace(/^.+_/, "");
-                    $("#resultTable").append(
-                        $("<tr></tr>")
-                            .append($("<th></th>").text(item.replace(/_kg$/, "")))
-                            .append($("<td></td>").text(val + (isNaN(val) ? "" : "[" + unit + "]")))
-                    );
-                    break;
-                case /^年齢$/.test(item):
-                    // 年齢
-                    $("#resultTable").append(
-                        $("<tr></tr>")
-                            .append($("<th></th>").text(item))
-                            .append($("<td></td>").text(i[item]["value"] + "歳"))
-                    );
-                    break;
-                case /^性別／gender$/.test(item):
-                    // 性別
-                    let gender = i[item]["value"];
-                    gender = (gender == "male" ? "男性／male" : (gender == "female" ? "女性／female" : gender))
-                    $("#resultTable").append(
-                        $("<tr></tr>")
-                            .append($("<th></th>").text(item))
-                            .append($("<td></td>").text(gender))
-                    );
-                    break;
-                case /^利き手／handness$/.test(item):
-                    // 利き手
-                    let hand = i[item]["value"];
-                    hand = (hand == "right" ? "右利き／right" : (hand == "left" ? "左利き／left" : (hand == "both" ? "両利き／both" : hand)))
-                    $("#resultTable").append(
-                        $("<tr></tr>")
-                            .append($("<th></th>").text(item))
-                            .append($("<td></td>").text(hand))
-                    );
-                    break;
-                case /^血液型$/.test(item):
-                    // 血液型
-                    $("#resultTable").append(
-                        $("<tr></tr>")
-                            .append($("<th></th>").text(item))
-                            .append($("<td></td>").text(i[item]["value"] + "型"))
-                    );
-                    break;
-                case /^誕生日$/.test(item):
-                    // 誕生日
-                    $("#resultTable").append(
-                        $("<tr></tr>")
-                            .append($("<th></th>").text(item))
-                            .append($("<td></td>").text(i[item]["value"].replace(/^--(\d+)-(\d+)/, "$1/$2")))
-                    );
-                    break;
-                case /^シンボルカラー$/.test(item):
-                    //シンボルカラー
-                    $("#resultTable").append(
-                        $("<tr></tr>")
-                            .append($("<th></th>").text(item))
-                            .append($("<td></td>")
-                                .append("#" + i[item]["value"] + "<div class='col-xs-6' style='background-color:#" + i[item]["value"] + ";height:20px;'></div>"))
-                    );
-                    break;
-                case /^アイドル名鑑リンク$/.test(item):
-                    // リンク
-                    $("#resultTable").append(
-                        $("<tr></tr>")
-                            .append($("<th></th>").text(item))
-                            .append($("<td></td>").append("<a href=" + i[item]["value"] + " target='_blank'>Link</a>"))
-                    );
-                    break;
-                case /^キャスト$/.test(item):
-                    // キャスト
-                    $("#resultTable").append(
-                        $("<tr></tr>")
-                            .append($("<th></th>").text(item))
-                            .append($("<td></td>").append("<a href=https://ja.wikipedia.org/wiki/"
-                                + i[item]["value"] + " target='_blank'>" + i[item]["value"] + "</a>"))
-                    );
-                    break;
-                case /^兄弟姉妹$/.test(item):
-                    // 兄弟姉妹
-                    let tdVal = "";
-                    i[item]["value"].split(', ').forEach(sibling => {
-                        let name = sibling.replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "");
-                        tdVal += "<a href=https://hagiayato.github.io/MySparql/imasparql/idolsearch/detail.html?s=" + name + " >" + name + "</a> ";
-                    });
-                    $("#resultTable").append(
-                        $("<tr></tr>")
-                            .append($("<th></th>").text(item))
-                            .append($("<td></td>").append(tdVal))
-                    );
-                    break;
-                case /^ctype$/.test(item):
-                    // ctype:表には出さず、ページの文字切替に使用
-                    break;
-                default:
-                    $("#resultTable").append(
-                        $("<tr></tr>")
-                            .append($("<th></th>").text(item))
-                            .append($("<td></td>").text(i[item]["value"]))
-                    );
-                    break;
-            }
-        }
+        writeDetailTable(i);
     });
 }
 
@@ -361,18 +225,7 @@ function doIdolUnit(Subject) {
         // ヘッダ挿入
         initUnitTable();
         // 戻り値を表に入れる
-        let index = 1;
-        json.forEach(i => {
-            $("#unitTable").append(
-                $("<tr></tr>")
-                    .append($("<th></th>").text(index))
-                    .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/unitdetail.html?s="
-                        + i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
-                        + "' >" + i["name"]["value"] + "</a>"))
-                // .append($("<td></td>").text(i["name"]["value"]))
-            );
-            index++;
-        });
+        writeLinkName(json, "#unitTable", "unitdetail.html");
     }).catch(error => {
         // 通信失敗
         alert('エラーが発生しました：' + error);
@@ -416,18 +269,7 @@ function doIdolClothes(Subject) {
         // ヘッダ挿入
         initClothesTable();
         // 戻り値を表に入れる
-        let index = 1;
-        json.forEach(i => {
-            $("#clothesTable").append(
-                $("<tr></tr>")
-                    .append($("<th></th>").text(index))
-                    .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/clothesdetail.html?s="
-                        + i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
-                        + "' >" + i["name"]["value"] + "</a>"))
-                // .append($("<td></td>").text(i["name"]["value"]))
-            );
-            index++;
-        });
+        writeLinkName(json, "#clothesTable", "clothesdetail.html");
     }).catch(error => {
         // 通信失敗
         alert('エラーが発生しました：' + error);
