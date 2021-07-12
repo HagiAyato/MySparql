@@ -38,7 +38,7 @@ function doUnitDetail(Subject) {
     promiseSparqlRequest(urlQuery).then(json => {
         // 通信成功
         // ヘッダ挿入
-        initDetailTable();
+        init2ColumnsTable("#detailTable", "項目", "情報");
         // 戻り値を表に入れる
         json.forEach(i => {
             $("#unitName").text("ユニット詳細[" + i["ユニット名"]["value"] + "]");
@@ -82,7 +82,7 @@ function doMemberList(Subject) {
     promiseSparqlRequest(urlQuery).then(json => {
         // 通信成功
         // ヘッダ挿入
-        initMemberTable();
+        init2ColumnsTable("#memberTable", "No.", "名前");
         // 戻り値を表に入れる
         writeLinkName(json, "#memberTable", "detail.html");
     }).catch(error => {

@@ -131,24 +131,16 @@ function getParam(name, url) {
 }
 
 /**
- * 詳細表示初期化
+ * 2列テーブルの初期化
+ * @param {String} tableId テーブルID
+ * @param {String} thName ヘッダ列名
+ * @param {String} tdName 値列名
  */
-function initDetailTable() {
-    $("#detailTable").append(
+function init2ColumnsTable(tableId, thName, tdName){
+    $(tableId).append(
         $("<tr></tr>")
-            .append($("<th></th>").text("項目"))
-            .append($("<th></th>").text("情報"))
-    );
-}
-
-/**
- * 対象者表示初期化
- */
-function initMemberTable() {
-    $("#memberTable").append(
-        $("<tr></tr>")
-            .append($("<th></th>").text("No."))
-            .append($("<th></th>").text("名前"))
+            .append($("<th></th>").text(thName))
+            .append($("<th></th>").text(tdName))
     );
 }
 
@@ -282,6 +274,23 @@ function writeLinkName(json, tableName, htmlName) {
                 .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/" + htmlName + "?s="
                     + i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
                     + "' >" + i["name"]["value"] + "</a>"))
+        );
+        index++;
+    });
+}
+
+/**
+ * 任意のテーブルに、名称一覧を書き込み
+ * @param {Object} json データファイル
+ * @param {String} tableName 対象テーブル名
+ */
+ function writeName(json, tableName) {
+    let index = 1;
+    json.forEach(i => {
+        $(tableName).append(
+            $("<tr></tr>")
+                .append($("<th></th>").text(index))
+                .append($("<td></td>").text(i["name"]["value"]))
         );
         index++;
     });

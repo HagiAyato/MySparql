@@ -9,6 +9,9 @@ window.onload = function () {
     doIdolColl(Subject);
     doIdolUnit(Subject);
     doIdolClothes(Subject);
+    doIdolEvent(Subject);
+    doMusicRecordingEvent(Subject);
+    doScriptTextEvent(Subject);
 }
 
 // 定数定義
@@ -119,7 +122,7 @@ function showDetail(json) {
     // 一度divの中身を空にする
     $("#detailTable tr").remove();
     // ヘッダ挿入
-    initDetailTable();
+    init2ColumnsTable("#detailTable", "項目", "情報");
     // 戻り値を表に入れる
     json.forEach(i => {
         $("#idolName").text((/Idol/.test(i["ctype"]["value"]) ? "アイドル" : "人物") + "詳細[" + i["名前"]["value"] + "]");
@@ -201,17 +204,6 @@ const QUERY_UNIT =
     + "ORDER BY ?name "];
 
 /**
- * ユニット名表示初期化
- */
-function initUnitTable() {
-    $("#unitTable").append(
-        $("<tr></tr>")
-            .append($("<th></th>").text("№"))
-            .append($("<th></th>").text("ユニット名"))
-    );
-}
-
-/**
  * ユニット名表示処理1
  * @param {String} Subject 主語 
  */
@@ -223,7 +215,7 @@ function doIdolUnit(Subject) {
     promiseSparqlRequest(urlQuery).then(json => {
         // 通信成功
         // ヘッダ挿入
-        initUnitTable();
+        init2ColumnsTable("#unitTable", "№", "ユニット名");
         // 戻り値を表に入れる
         writeLinkName(json, "#unitTable", "unitdetail.html");
     }).catch(error => {
@@ -245,17 +237,6 @@ const QUERY_CLOTHES =
     + "ORDER BY ?name "];
 
 /**
- * 衣装表示初期化
- */
-function initClothesTable() {
-    $("#clothesTable").append(
-        $("<tr></tr>")
-            .append($("<th></th>").text("№"))
-            .append($("<th></th>").text("衣装名"))
-    );
-}
-
-/**
  * 衣装表示処理1
  * @param {String} Subject 主語 
  */
@@ -267,9 +248,108 @@ function doIdolClothes(Subject) {
     promiseSparqlRequest(urlQuery).then(json => {
         // 通信成功
         // ヘッダ挿入
-        initClothesTable();
+        init2ColumnsTable("#clothesTable", "№", "衣装名");
         // 戻り値を表に入れる
         writeLinkName(json, "#clothesTable", "clothesdetail.html");
+    }).catch(error => {
+        // 通信失敗
+        alert('エラーが発生しました：' + error);
+    });
+}
+
+// 定数定義
+const QUERY_EVENT =
+    [Query_def + "PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/> "
+        + "SELECT ?s ?name "
+        + "WHERE { "
+        + "  ?s rdf:type imas:Event. "
+        + "  ?s schema:actor idol:",
+    ". "
+    + "  ?s schema:name ?name. "
+    + "} "
+    + "ORDER BY ?name "];
+
+/**
+ * イベント表示処理1
+ * @param {String} Subject 主語 
+ */
+function doIdolEvent(Subject) {
+    // クエリビルド
+    const search1 = escapeForSparql(Subject);
+    // URL、クエリ結合
+    const urlQuery = ADDRESS + encodeURIComponent(QUERY_EVENT[0] + search1 + QUERY_EVENT[1]);
+    promiseSparqlRequest(urlQuery).then(json => {
+        // 通信成功
+        // ヘッダ挿入
+        init2ColumnsTable("#eventTable", "№", "イベント名");
+        // 戻り値を表に入れる
+        writeName(json, "#eventTable");
+    }).catch(error => {
+        // 通信失敗
+        alert('エラーが発生しました：' + error);
+    });
+}
+
+// 定数定義
+const QUERY_MUSIC_RACORDING =
+    [Query_def + "PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/> "
+        + "SELECT ?s ?name "
+        + "WHERE { "
+        + "  ?s rdf:type schema:MusicRecording. "
+        + "  ?s schema:byArtist idol:",
+    ". "
+    + "  ?s schema:name ?name. "
+    + "} "
+    + "ORDER BY ?name "];
+
+/**
+ * 参加楽曲表示処理1
+ * @param {String} Subject 主語 
+ */
+function doMusicRecordingEvent(Subject) {
+    // クエリビルド
+    const search1 = escapeForSparql(Subject);
+    // URL、クエリ結合
+    const urlQuery = ADDRESS + encodeURIComponent(QUERY_MUSIC_RACORDING[0] + search1 + QUERY_MUSIC_RACORDING[1]);
+    promiseSparqlRequest(urlQuery).then(json => {
+        // 通信成功
+        // ヘッダ挿入
+        init2ColumnsTable("#musicRecordingTable", "№", "曲名");
+        // 戻り値を表に入れる
+        writeName(json, "#musicRecordingTable");
+    }).catch(error => {
+        // 通信失敗
+        alert('エラーが発生しました：' + error);
+    });
+}
+
+// 定数定義
+const QUERY_SCRIPT_TEXT =
+    [Query_def + "PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/> "
+        + "SELECT ?s ?name "
+        + "WHERE { "
+        + "  ?s rdf:type imas:ScriptText. "
+        + "  ?s imas:Source idol:",
+    ". "
+    + "  ?s schema:text ?name. "
+    + "} "
+    + "ORDER BY ?name "];
+
+/**
+ * 台詞表示処理1
+ * @param {String} Subject 主語 
+ */
+function doScriptTextEvent(Subject) {
+    // クエリビルド
+    const search1 = escapeForSparql(Subject);
+    // URL、クエリ結合
+    const urlQuery = ADDRESS + encodeURIComponent(QUERY_SCRIPT_TEXT[0] + search1 + QUERY_SCRIPT_TEXT[1]);
+    promiseSparqlRequest(urlQuery).then(json => {
+        // 通信成功
+        // ヘッダ挿入
+        init2ColumnsTable("#scriptTextTable", "№", "台詞");
+        // 戻り値を表に入れる
+        writeName(json, "#scriptTextTable");
     }).catch(error => {
         // 通信失敗
         alert('エラーが発生しました：' + error);
