@@ -179,7 +179,7 @@ function doIdolColl(Subject) {
                 $("<tr></tr>")
                     .append($("<th></th>").text(index))
                     .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?s="
-                        + i["callee"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
+                        + encodeURIComponent(i["callee"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", ""))
                         + "' >" + i["name2"]["value"] + "</a>"))
                     .append($("<td></td>").text(i["call"]["value"]))
             );

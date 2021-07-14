@@ -72,7 +72,7 @@ function escapeForSparql(param) {
             .replace(/\]/g, '\\\\]') // ]
             .replace(/\+/g, '\\\\+'); // +
     }
-    return encodeURIComponent(converted);
+    return converted;
 }
 
 /**
@@ -136,7 +136,7 @@ function getParam(name, url) {
  * @param {String} thName ヘッダ列名
  * @param {String} tdName 値列名
  */
-function init2ColumnsTable(tableId, thName, tdName){
+function init2ColumnsTable(tableId, thName, tdName) {
     $(tableId).append(
         $("<tr></tr>")
             .append($("<th></th>").text(thName))
@@ -237,7 +237,7 @@ function writeDetailTable(i) {
                 let tdVal = "";
                 i[item]["value"].split(', ').forEach(sibling => {
                     let name = sibling.replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "");
-                    tdVal += "<a href=https://hagiayato.github.io/MySparql/imasparql/idolsearch/detail.html?s=" + name + " >" + name + "</a> ";
+                    tdVal += "<a href=https://hagiayato.github.io/MySparql/imasparql/idolsearch/detail.html?s=" + encodeURIComponent(name) + " >" + name + "</a> ";
                 });
                 $("#detailTable").append(
                     $("<tr></tr>")
@@ -272,7 +272,7 @@ function writeLinkName(json, tableName, htmlName) {
             $("<tr></tr>")
                 .append($("<th></th>").text(index))
                 .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/" + htmlName + "?s="
-                    + i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
+                    + encodeURIComponent(i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", ""))
                     + "' >" + i["name"]["value"] + "</a>"))
         );
         index++;
@@ -284,7 +284,7 @@ function writeLinkName(json, tableName, htmlName) {
  * @param {Object} json データファイル
  * @param {String} tableName 対象テーブル名
  */
- function writeName(json, tableName) {
+function writeName(json, tableName) {
     let index = 1;
     json.forEach(i => {
         $(tableName).append(

@@ -204,7 +204,7 @@ function doIdolSearch() {
                     .append($("<td></td>").text(i["titles"]["value"]))
                     .append($("<td></td>").text((/Idol/.test(i["ctype"]["value"]) ? "アイドル" : "アイドル以外")))
                     .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?s="
-                        + i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", "")
+                        + encodeURIComponent(i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", ""))
                         + "' target='_blank'>" + i["iName"]["value"] + "</a>"))
                     .append($("<td></td>").append((("idolListURL" in i)
                         ? ("<a href=" + i["idolListURL"]["value"] + " target='_blank'>Link</a>") : ("---"))))
@@ -242,7 +242,7 @@ function deleteConditions() {
  * 検索詳細条件
  * @param {boolean} isEnable 有効無効
  */
- function changeEnableConditions(isEnable) {
+function changeEnableConditions(isEnable) {
     for (const [key, value] of Object.entries(conditions)) {
         $("#" + key + "Input").prop("disabled", !isEnable);
     }
