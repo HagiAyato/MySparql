@@ -229,7 +229,7 @@ function writeDetailTable(i) {
                     $("<tr></tr>")
                         .append($("<th></th>").text(item))
                         .append($("<td></td>").append("<a href=https://ja.wikipedia.org/wiki/"
-                            + i[item]["value"] + " target='_blank'>" + i[item]["value"] + "</a>"))
+                            + encodeURIComponent(i[item]["value"]) + " target='_blank'>" + i[item]["value"] + "</a>"))
                 );
                 break;
             case /^兄弟姉妹$/.test(item):
@@ -271,7 +271,7 @@ function writeLinkName(json, tableName, htmlName) {
         $(tableName).append(
             $("<tr></tr>")
                 .append($("<th></th>").text(index))
-                .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/" + htmlName + "?s="
+                .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/" + encodeURIComponent(htmlName) + "?s="
                     + encodeURIComponent(i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", ""))
                     + "' >" + i["name"]["value"] + "</a>"))
         );
