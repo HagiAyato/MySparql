@@ -2,21 +2,7 @@
  * ページ表示時処理
  */
 window.onload = function () {
-    initResultTable();
-}
-
-/**
- * 検索結果初期化
- */
-function initResultTable() {
-    $("#resultTable").append(
-        $("<tr></tr>")
-            .append($("<th></th>").text("№"))
-            .append($("<th></th>").text("ブランド"))
-            .append($("<th></th>").text("アイドル/アイドル以外"))
-            .append($("<th></th>").text("名前"))
-            .append($("<th></th>").text("アイドル名鑑(公式)"))
-    );
+    
 }
 
 // 定数定義
@@ -191,10 +177,8 @@ function doIdolSearch() {
         // 通信成功
         // 件数表示
         $("#lenResult").text(Object.keys(json).length);
-        // 一度divの中身を空にする
-        $("#resultTable tr").remove();
-        // ヘッダ挿入
-        initResultTable();
+        // 一度tbodyの中身を空にする
+        $("#resultTable tbody").remove();
         // 戻り値を表に入れる
         let index = 1;
         json.forEach(i => {

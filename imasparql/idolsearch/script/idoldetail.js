@@ -119,8 +119,6 @@ function doIdolDetail(Subject) {
  * @param {json} json アイドルデータ
  */
 function showDetail(json) {
-    // 一度divの中身を空にする
-    $("#detailTable tr").remove();
     // ヘッダ挿入
     init2ColumnsTable("#detailTable", "項目", "情報");
     // 戻り値を表に入れる
@@ -151,12 +149,7 @@ const QUERY_CALL =
  * アイドル呼称表示初期化
  */
 function initCallTable() {
-    $("#callTable").append(
-        $("<tr></tr>")
-            .append($("<th></th>").text("№"))
-            .append($("<th></th>").text("呼ぶアイドル・人物"))
-            .append($("<th></th>").text("呼称"))
-    );
+    $("#callTable").append("<thead><tr><th>№</th><th>呼ぶアイドル・人物</th><th>呼称</th></tr></thead>");
 }
 
 /**

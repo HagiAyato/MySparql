@@ -137,11 +137,7 @@ function getParam(name, url) {
  * @param {String} tdName 値列名
  */
 function init2ColumnsTable(tableId, thName, tdName) {
-    $(tableId).append(
-        $("<tr></tr>")
-            .append($("<th></th>").text(thName))
-            .append($("<th></th>").text(tdName))
-    );
+    $(tableId).append("<thead><tr><th>" + thName + "</th><th>" + tdName + "</th></tr></thead>");
 }
 
 /**
