@@ -131,7 +131,9 @@ function showDetail(json) {
 // 定数定義
 const QUERY_CALL =
     [Query_def + "PREFIX idol: <https://sparql.crssnky.xyz/imasrdf/RDFs/detail/> "
-        + "SELECT ?callee ?name1 ?name2 (group_concat(DISTINCT ?called; separator = ', ') as ?call) "
+        + "SELECT ?callee (group_concat(DISTINCT ?name; separator = ', ') as ?name2) "
+        + "(group_concat(DISTINCT ?gName; separator = ', ') as ?gName2) "
+        + "(group_concat(DISTINCT ?called; separator = ', ') as ?call) "
         + "WHERE { "
         + "  ?s rdf:type imas:CallName. "
         + "  ?s imas:Source idol:",
@@ -139,11 +141,11 @@ const QUERY_CALL =
     + "  ?s imas:Source ?caller. "
     + "  ?s imas:Destination ?callee. "
     + "  ?s imas:Called ?called. "
-    + "  ?caller schema:name ?name1 FILTER( lang(?name1) = 'ja'). "
-    + "  ?callee schema:name ?name2 FILTER( lang(?name2) = 'ja'). "
+    + "  OPTIONAL { ?callee schema:name|schema:alternateName ?name FILTER( lang(?name) = 'ja'). } "
+    + "  ?callee schema:givenName ?gName FILTER( lang(?gName) = 'ja'). "
     + "} "
-    + "GROUP BY ?name1 ?name2 ?callee "
-    + "ORDER BY ?name2 "];
+    + "GROUP BY ?name2 ?gName2 ?callee "
+    + "ORDER BY ?name2 ?gName2 "];
 
 /**
  * アイドル呼称表示初期化
@@ -168,12 +170,13 @@ function doIdolColl(Subject) {
         // 戻り値を表に入れる
         let index = 1;
         json.forEach(i => {
+            let name = ("name2" in i)?i["name2"]["value"]:i["gName2"]["value"];
             $("#callTable").append(
                 $("<tr></tr>")
                     .append($("<th></th>").text(index))
                     .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?s="
                         + encodeURIComponent(i["callee"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", ""))
-                        + "' >" + i["name2"]["value"] + "</a>"))
+                        + "' >" + name + "</a>"))
                     .append($("<td></td>").text(i["call"]["value"]))
             );
             index++;
