@@ -291,3 +291,11 @@ function writeName(json, tableName) {
         index++;
     });
 }
+
+/**
+ * RDFリンク生成
+ * @param {String} Subject 主語
+ */
+function makeRDFLink(Subject) {
+    $("#rdfLink").attr("href", "https://sparql.crssnky.xyz/imasrdf/RDFs/detail/" + encodeURIComponent(Subject))
+}

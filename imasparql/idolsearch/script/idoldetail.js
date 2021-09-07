@@ -5,6 +5,7 @@ window.onload = function () {
     const Subject = getParam('s');
     if (Subject == null || Subject == "") location.href = "/MySparql/imasparql/idolsearch/";
     // アイドル詳細読み込み
+    makeRDFLink(Subject);
     doIdolDetail(Subject);
     doIdolColl(Subject);
     doIdolUnit(Subject);
