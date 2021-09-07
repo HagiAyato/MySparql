@@ -1,3 +1,4 @@
+/* テーブル内改行無 */
 .table-no-new-line > thead > tr > th,
 .table-no-new-line > tbody > tr > th,
 .table-no-new-line > tfoot > tr > th,
@@ -5,4 +6,29 @@
 .table-no-new-line > tbody > tr > td,
 .table-no-new-line > tfoot > tr > td {
     white-space: nowrap;
+}
+
+/* td背景色 */
+td.bg765AS {
+    background-color: #ffedf0;
+}
+
+td.bgCinderellaGirls {
+    background-color: #e9f2f9;
+}
+
+td.bgMillionLive {
+    background-color: #fff9e6;
+}
+
+td.bgSideM {
+    background-color: #e7f8f4;
+}
+
+td.bgShinyColors {
+    background-color: #f3f8ff;
+}
+
+td.bgOther {
+    background-color: #f5f5f5;
 }

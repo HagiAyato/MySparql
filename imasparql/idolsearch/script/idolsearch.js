@@ -185,7 +185,7 @@ function doIdolSearch() {
             $("#resultTable").append(
                 $("<tr></tr>")
                     .append($("<th></th>").text(index))
-                    .append($("<td></td>").text(i["titles"]["value"]))
+                    .append($("<td class='bg" + i["titles"]["value"] + "'></td>").text(i["titles"]["value"]))
                     .append($("<td></td>").text((/Idol/.test(i["ctype"]["value"]) ? "アイドル" : "アイドル以外")))
                     .append($("<td></td>").append("<a href='/MySparql/imasparql/idolsearch/detail.html?s="
                         + encodeURIComponent(i["s"]["value"].replace("https://sparql.crssnky.xyz/imasrdf/RDFs/detail/", ""))
