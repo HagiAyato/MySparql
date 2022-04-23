@@ -34,7 +34,7 @@
     <script src="script/sfcinderella.js"></script>
     <link rel="stylesheet" href="css/sfcinderella.css" />
     </script>
-    <title>Stage for Cinderella グループ分けシミュレーション(2022年4月現在)</title>
+    <title>Stage for Cinderella グループ分けシミュレーション</title>
     <meta name="description"
         content="アイドルマスターシンデレラガールズの投票イベント、Stage for Cinderella 予選のグループ分けシミュレーションページです。イベント予想や、戦略を考えることにお役立てください。" />
 </head>
@@ -44,6 +44,7 @@
         <div class="container-fluid">
             <div class="navbar-header">
                 <h1>Stage for Cinderella グループ分けシミュレーション</h1>
+                (2022年4月現在の情報)
             </div>
         </div>
     </nav>
@@ -90,57 +91,73 @@
         onclick="doMakeGroup();" />
         <div class="table-responsive">
             <h4>グループA(47人)</h4>
-            <table id="groupATable" class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>属性</th>
-                        <th>名前</th>
-                        <th>ボイス</th>
-                        <th>圏内入り経験</th>
-                        <th>CG(1位)経験</th>
-                    </tr>
-                </thead>
-            </table>
+            <button class="btn btn-danger" id="BTNgroupA"
+                onclick="dispElement('#BTNgroupA', '#groupA', '');">非表示△</button><br />
+            <div class="border p-3" id="groupA" style="display:block">
+                <table id="groupATable" class="table table-hover">
+                    <thead class="bgGroupA">
+                        <tr>
+                            <th>No.</th>
+                            <th>属性</th>
+                            <th>名前</th>
+                            <th>ボイス</th>
+                            <th>圏内入り経験</th>
+                            <th>CG(1位)経験</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
             <h4>グループB(47人)</h4>
-            <table id="groupBTable" class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>属性</th>
-                        <th>名前</th>
-                        <th>ボイス</th>
-                        <th>圏内入り経験</th>
-                        <th>CG(1位)経験</th>
-                    </tr>
-                </thead>
-            </table>
+            <button class="btn btn-primary" id="BTNgroupB"
+                onclick="dispElement('#BTNgroupB', '#groupB', '');">非表示△</button><br />
+            <div class="border p-3" id="groupB" style="display:block">
+                <table id="groupBTable" class="table table-hover">
+                    <thead class="bgGroupB">
+                        <tr>
+                            <th>No.</th>
+                            <th>属性</th>
+                            <th>名前</th>
+                            <th>ボイス</th>
+                            <th>圏内入り経験</th>
+                            <th>CG(1位)経験</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
             <h4>グループC(48人)</h4>
-            <table id="groupCTable" class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>属性</th>
-                        <th>名前</th>
-                        <th>ボイス</th>
-                        <th>圏内入り経験</th>
-                        <th>CG(1位)経験</th>
-                    </tr>
-                </thead>
-            </table>
+            <button class="btn btn-warning" id="BTNgroupC"
+                onclick="dispElement('#BTNgroupC', '#groupC', '');">非表示△</button><br />
+            <div class="border p-3" id="groupC" style="display:block">
+                <table id="groupCTable" class="table table-hover">
+                    <thead class="bgGroupC">
+                        <tr>
+                            <th>No.</th>
+                            <th>属性</th>
+                            <th>名前</th>
+                            <th>ボイス</th>
+                            <th>圏内入り経験</th>
+                            <th>CG(1位)経験</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
             <h4>グループD(48人)</h4>
-            <table id="groupDTable" class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>属性</th>
-                        <th>名前</th>
-                        <th>ボイス</th>
-                        <th>圏内入り経験</th>
-                        <th>CG(1位)経験</th>
-                    </tr>
-                </thead>
-            </table>
+            <button class="btn btn-success" id="BTNgroupD"
+                onclick="dispElement('#BTNgroupD', '#groupD', '');">非表示△</button><br />
+            <div class="border p-3" id="groupD" style="display:block">
+                <table id="groupDTable" class="table table-hover">
+                    <thead class="bgGroupD">
+                        <tr>
+                            <th>No.</th>
+                            <th>属性</th>
+                            <th>名前</th>
+                            <th>ボイス</th>
+                            <th>圏内入り経験</th>
+                            <th>CG(1位)経験</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
     </div>
 </body>

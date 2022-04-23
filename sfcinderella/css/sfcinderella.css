@@ -9,26 +9,35 @@
 }
 
 /* td背景色 */
-td.bg765AS {
-    background-color: #ffedf0;
+td.bgCu {
+    background-color: #ffbbcc;
 }
 
-td.bgCinderellaGirls {
-    background-color: #e9f2f9;
+td.bgCo {
+    background-color: #aaeeff;
 }
 
-td.bgMillionLive {
-    background-color: #fff9e6;
+td.bgPa {
+    background-color: #ffdd66;
 }
 
-td.bgSideM {
-    background-color: #e7f8f4;
+td.bgTrue {
+    background-color: #ffd466;
 }
 
-td.bgShinyColors {
-    background-color: #f3f8ff;
+/* グループ別背景色 */
+.bgGroupA {
+    background-color: #ffacb4;
 }
 
-td.bgOther {
-    background-color: #f5f5f5;
+.bgGroupB {
+    background-color: #b4d2ff;
+}
+
+.bgGroupC {
+    background-color: #ffdf7e;
+}
+
+.bgGroupD {
+    background-color: #7effc3;
 }
