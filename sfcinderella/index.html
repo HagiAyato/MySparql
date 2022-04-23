@@ -34,7 +34,7 @@
     <script src="script/sfcinderella.js"></script>
     <link rel="stylesheet" href="css/sfcinderella.css" />
     </script>
-    <title>Stage for Cinderella グループ分けシミュレーション</title>
+    <title>Stage for Cinderella グループ分けシミュレーション(2022年4月現在)</title>
     <meta name="description"
         content="アイドルマスターシンデレラガールズの投票イベント、Stage for Cinderella 予選のグループ分けシミュレーションページです。イベント予想や、戦略を考えることにお役立てください。" />
 </head>
@@ -86,11 +86,14 @@
             </div>
         </div>
         <h3>グループ一覧</h3>
+        <input type="button" id="BTNMakeGroup" class="btn btn-primary btn-lg" value="グループ分け"
+        onclick="doMakeGroup();" />
         <div class="table-responsive">
-            <h4>グループA</h4>
-            <table id="groupA" class="table table-hover">
+            <h4>グループA(47人)</h4>
+            <table id="groupATable" class="table table-hover">
                 <thead>
                     <tr>
+                        <th>No.</th>
                         <th>属性</th>
                         <th>名前</th>
                         <th>ボイス</th>
@@ -99,10 +102,11 @@
                     </tr>
                 </thead>
             </table>
-            <h4>グループB</h4>
-            <table id="groupB" class="table table-hover">
+            <h4>グループB(47人)</h4>
+            <table id="groupBTable" class="table table-hover">
                 <thead>
                     <tr>
+                        <th>No.</th>
                         <th>属性</th>
                         <th>名前</th>
                         <th>ボイス</th>
@@ -111,10 +115,11 @@
                     </tr>
                 </thead>
             </table>
-            <h4>グループC</h4>
-            <table id="groupC" class="table table-hover">
+            <h4>グループC(48人)</h4>
+            <table id="groupCTable" class="table table-hover">
                 <thead>
                     <tr>
+                        <th>No.</th>
                         <th>属性</th>
                         <th>名前</th>
                         <th>ボイス</th>
@@ -123,10 +128,11 @@
                     </tr>
                 </thead>
             </table>
-            <h4>グループD</h4>
-            <table id="groupD" class="table table-hover">
+            <h4>グループD(48人)</h4>
+            <table id="groupDTable" class="table table-hover">
                 <thead>
                     <tr>
+                        <th>No.</th>
                         <th>属性</th>
                         <th>名前</th>
                         <th>ボイス</th>

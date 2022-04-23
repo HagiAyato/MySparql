@@ -4,8 +4,6 @@
  * ページ表示時処理
  */
 window.onload = function () {
-    // CSV読み込み
-    getCSV();
 }
 
 //　要素表示関係
@@ -39,32 +37,4 @@ function changeEnable(isEnable, ...target) {
         function (item, index) {
             $("#" + item).prop("disabled", !isEnable);
         });
-}
-
-// csv読み込み
-// コード参考：https://uxmilk.jp/11586
-
-/**
- * csvを読み込む
- */
-function getCSV() {
-    var request = new XMLHttpRequest();
-    request.open("get", "/data/idol_list.csv", true);
-    request.send(null); // HTTPリクエストの発行
-    request.onload = function () {
-        convertCSVtoArray(request.responseText);
-    }
-}
-
-/**
- * csv文字列を配列化する関数
- * @param {string} csvText csv文字列
- */
-function convertCSVtoArray(csvText) {
-    var result = [];
-    var tmp = csvText.split("\n");
-
-    for (var i = 0; i < tmp.length; ++i) {
-        result[i] = tmp[i].split(',');
-    }
 }
