@@ -48,7 +48,8 @@ window.onload = function () {
  */
 function loadIdolData() {
     // CSV読み込み
-    getCSV("https://hagiayato.github.io/MySparql/sfcinderella/data/idol_list.csv");
+    // getCSV("https://hagiayato.github.io/MySparql/sfcinderella/data/idol_list.csv");
+    getCSV("/MySparql/sfcinderella/data/idol_list.csv");
 }
 
 /**
