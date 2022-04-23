@@ -56,7 +56,7 @@ function loadIdolData() {
  * @returns 有無
  */
 function flagToUmu(flag) {
-    return (flag = "TRUE" ? '有' : '無');
+    return (flag == "TRUE" ? '有' : '無');
 }
 
 /**
@@ -65,28 +65,42 @@ function flagToUmu(flag) {
 function showIdolsOnGroup() {
     let groupIndex = 0;
     let idolCount = 0;
+    grouptableId.forEach(id => {
+        // 一度tbodyの中身を空にする
+        $(id + " tbody").remove();
+    });
     for (let index = 1; index < idolList.length; index++) {
         if (groupSize[groupIndex] <= idolCount) {
             idolCount = 0;
             groupIndex++;
         }
+        idolCount++;
         $(grouptableId[groupIndex]).append(
             $("<tr></tr>")
-                .append($("<th></th>").text(index))
+                .append($("<th></th>").text(idolCount))
                 .append($("<td></td>").text(idolList[index][1]))
                 .append($("<td></td>").text(idolList[index][2]))
                 .append($("<td></td>").text(flagToUmu(idolList[index][3])))
                 .append($("<td></td>").text(flagToUmu(idolList[index][4])))
                 .append($("<td></td>").text(flagToUmu(idolList[index][5])))
         );
-        idolCount++;
     }
     changeEnable(true, "BTNMakeGroup");
 }
 
 /**
  * グループ分け
+ * 参考：https://gray-code.com/javascript/shuffle-for-item-of-array/#:~:text=%E3%82%92%E3%82%B7%E3%83%A3%E3%83%83%E3%83%95%E3%83%AB%E3%81%99%E3%82%8B-,%E9%85%8D%E5%88%97%E3%81%AE%E8%A6%81%E7%B4%A0%E3%82%92%E3%83%A9%E3%83%B3%E3%83%80%E3%83%A0%E3%81%AB%E4%B8%A6%E3%81%B3%E6%9B%BF%E3%81%88%E3%82%8B,%E3%81%99%E3%82%8B%E3%81%93%E3%81%A8%E3%81%8C%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82
  */
 function doMakeGroup(){
-    
+    for (let i = 1; i < idolList.length; i++) {
+    // 1〜配列最大の範囲で値を取得
+    let j = Math.floor(Math.random() * (idolList.length - 2)) + 1;
+        // console.log(i + ":" + j);
+        // 要素の並び替えを実行
+        let tmp = idolList[i];
+        idolList[i] = idolList[j];
+        idolList[j] = tmp;
+    }
+    showIdolsOnGroup();
 }
