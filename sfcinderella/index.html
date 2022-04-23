@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-185637831-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-185637831-1');
+    </script>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+
+    <!-- トグルスイッチプラグイン -->
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
+    <script src="script/common.js"></script>
+    <script src="script/sfcinderella.js"></script>
+    <link rel="stylesheet" href="css/sfcinderella.css" />
+    </script>
+    <title>Stage for Cinderella グループ分けシミュレーション</title>
+    <meta name="description"
+        content="アイドルマスターシンデレラガールズの投票イベント、Stage for Cinderella 予選のグループ分けシミュレーションページです。イベント予想や、戦略を考えることにお役立てください。" />
+</head>
+
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <h1>Stage for Cinderella グループ分けシミュレーション</h1>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<body>
+    <div class="container-fluid">
+        <div class="p-1">
+            <button class="btn" id="BTNReadme"
+                onclick="dispElement('#BTNReadme', '#readme', '説明');">説明表示▼</button><br />
+            <div class="border p-3" id="readme" style="display:none">
+                <h3>説明</h3>
+                <h4>概要</h4>
+                アイドルマスターシンデレラガールズの投票イベント、Stage for Cinderella 予選のグループ分けシミュレーションページです。<br />
+                イベント予想や、戦略を考えることにお役立てください。<br />
+                <h5>想定条件：</h5>
+                <ul>
+                    <li>投票対象アイドル数：190人</li>
+                    <li>グループ数：4グループ</li>
+                    <li>グループ分け条件：特になし(完全ランダム) ※本サイト作者の予想</li>
+                </ul>
+                <h4>使い方</h4>
+                <ol>
+                    <li>グループ分けボタンを押すと、190人のアイドルを4グループに分けた時のグループ分けを表示します。</li>
+                    <li>グループ分けボタンを押す度に、結果が変わります。</li>
+                </ol>
+                <h4>表示の補足</h4>
+                <ol>
+                    <li>属性：アイドルの属性<br />(Cu=キュート/Co=クール/Pa=パッション)</li>
+                    <li>名前：アイドルの名前</li>
+                    <li>ボイス：アイドルのボイス有無</li>
+                    <li>圏内入り経験：過去の投票イベントでの圏内入り有無(中間、速報含む)<br />出典：
+                        <a
+                            href="https://dic.nicovideo.jp/a/%E7%AC%AC10%E5%9B%9E%E3%82%B7%E3%83%B3%E3%83%87%E3%83%AC%E3%83%A9%E3%82%AC%E3%83%BC%E3%83%AB%E7%B7%8F%E9%81%B8%E6%8C%99">
+                            第10回シンデレラガール総選挙 投票結果 ニコニコ大百科
+                        </a>
+                    </li>
+                    <li>CG(1位)経験：CG=シンデレラガール(1位)経験有無</li>
+                </ol>
+            </div>
+        </div>
+        <h3>グループ一覧</h3>
+        <div class="table-responsive">
+            <h4>グループA</h4>
+            <table id="groupA" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>属性</th>
+                        <th>名前</th>
+                        <th>ボイス</th>
+                        <th>圏内入り経験</th>
+                        <th>CG(1位)経験</th>
+                    </tr>
+                </thead>
+            </table>
+            <h4>グループB</h4>
+            <table id="groupB" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>属性</th>
+                        <th>名前</th>
+                        <th>ボイス</th>
+                        <th>圏内入り経験</th>
+                        <th>CG(1位)経験</th>
+                    </tr>
+                </thead>
+            </table>
+            <h4>グループC</h4>
+            <table id="groupC" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>属性</th>
+                        <th>名前</th>
+                        <th>ボイス</th>
+                        <th>圏内入り経験</th>
+                        <th>CG(1位)経験</th>
+                    </tr>
+                </thead>
+            </table>
+            <h4>グループD</h4>
+            <table id="groupD" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>属性</th>
+                        <th>名前</th>
+                        <th>ボイス</th>
+                        <th>圏内入り経験</th>
+                        <th>CG(1位)経験</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</body>
+
+<footer>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-footer">
+                <h3>リンク</h3>
+                <h4>公式関係</h4>
+                <a href="https://idolmaster-official.jp/"> アイドルマスターofficial site</a><br />
+                <a href="https://sfcinderella2022.idolmaster-official.jp/"> StageforCinderella公式サイト</a>
+                <h4>製作者関係</h4>
+                <a href="https://hagiayato.github.io/my-site/"> 製作者のサイト "HA Works"</a><br />
+                <a href="https://github.com/HagiAyato/MySparql/tree/main/imasparql/sfcinderella">
+                    このwebアプリのソースコード(github)</a><br />
+            </div>
+        </div>
+    </nav>
+</footer>
+
+</html>
