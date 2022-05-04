@@ -2,6 +2,9 @@ var idolList;
 var groupSize = [47, 47, 48, 48];
 var grouptableId = ["#groupATable", "#groupBTable", "#groupCTable", "#groupDTable"];
 
+// 概要関係
+var groupOverviewId = ["#groupAOverview", "#groupBOverview", "#groupCOverview", "#groupDOverview"];
+
 // csv読み込み
 // コード参考：https://uxmilk.jp/11586
 
@@ -66,7 +69,7 @@ function flagToUmu(flag) {
  * @param {String} flag 
  * @returns CSS
  */
- function flagToBG(flag) {
+function flagToBG(flag) {
     return (flag == "TRUE" ? " class='bgTrue'" : "");
 }
 
@@ -76,6 +79,7 @@ function flagToUmu(flag) {
 function showIdolsOnGroup() {
     let groupIndex = 0;
     let idolCount = 0;
+    let cntHasVoice = [0, 0, 0, 0], cntWithinRange = [0, 0, 0, 0], cntIsCG = [0, 0, 0, 0];
     grouptableId.forEach(id => {
         // 一度tbodyの中身を空にする
         $(id + " tbody").remove();
@@ -95,6 +99,14 @@ function showIdolsOnGroup() {
                 .append($("<td " + flagToBG(idolList[index][4]) + "></td>").text(flagToUmu(idolList[index][4])))
                 .append($("<td " + flagToBG(idolList[index][5]) + "></td>").text(flagToUmu(idolList[index][5])))
         );
+        // カウント関係
+        if (idolList[index][3] == "TRUE") cntHasVoice[groupIndex]++;
+        if (idolList[index][4] == "TRUE") cntWithinRange[groupIndex]++;
+        if (idolList[index][5] == "TRUE") cntIsCG[groupIndex]++;
+    }
+    // カウント結果
+    for (let index = 0; index < groupOverviewId.length; index++) {
+        $(groupOverviewId[index]).text("内訳=>ボイス有：" + cntHasVoice[index] + "人/" + ((cntHasVoice[index]/groupSize[index])*100).toFixed(1) + "%、圏内入り経験有：" + cntWithinRange[index] + "人/" + ((cntWithinRange[index]/groupSize[index])*100).toFixed(1) + "%、CG(1位)経験有：" + cntIsCG[index] + "人/" + ((cntIsCG[index]/groupSize[index])*100).toFixed(1) + "%");
     }
 }
 
@@ -102,11 +114,11 @@ function showIdolsOnGroup() {
  * グループ分け
  * 参考：https://gray-code.com/javascript/shuffle-for-item-of-array/#:~:text=%E3%82%92%E3%82%B7%E3%83%A3%E3%83%83%E3%83%95%E3%83%AB%E3%81%99%E3%82%8B-,%E9%85%8D%E5%88%97%E3%81%AE%E8%A6%81%E7%B4%A0%E3%82%92%E3%83%A9%E3%83%B3%E3%83%80%E3%83%A0%E3%81%AB%E4%B8%A6%E3%81%B3%E6%9B%BF%E3%81%88%E3%82%8B,%E3%81%99%E3%82%8B%E3%81%93%E3%81%A8%E3%81%8C%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82
  */
-function doMakeGroup(){
+function doMakeGroup() {
     changeEnable(false, "BTNMakeGroup");
     for (let i = 1; i < idolList.length; i++) {
-    // 1〜配列最大の範囲で値を取得
-    let j = Math.floor(Math.random() * (idolList.length - 2)) + 1;
+        // 1〜配列最大の範囲で値を取得
+        let j = Math.floor(Math.random() * (idolList.length - 2)) + 1;
         // console.log(i + ":" + j);
         // 要素の並び替えを実行
         let tmp = idolList[i];
