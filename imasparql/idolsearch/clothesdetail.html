@@ -33,20 +33,18 @@
     <script src="script/common.js"></script>
     <script src="script/clothesdetail.js"></script>
     <link rel="stylesheet" href="css/idolsearch.css" />
+    <script>
+        $(function(){
+            // ヘッダ/フッタ共通化
+            $("#site-header").load("common/header.html");
+            $("#site-footer").load("common/footer.html");
+        });
     </script>
     <title>im@s アイドル・人物検索(by im@sparql)</title>
     <meta name="description" content="アイドルマスターシリーズの人物(アイドル,事務員,社長など…)検索ページ(sparqlのRDB、im@sparqlを使用して実装)" />
 </head>
 
-<header>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <h1>im@s アイドル・人物検索(by im@sparql)</h1>
-            </div>
-        </div>
-    </nav>
-</header>
+<header id="site-header"></header>
 
 <body>
     <div class="container-fluid">
@@ -70,23 +68,6 @@
     </div>
 </body>
 
-<footer>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-footer">
-                <h3>リンク</h3>
-                <h4>公式関係</h4>
-                <a href="https://idolmaster-official.jp/"> アイドルマスターofficial site</a><br />
-                <a href="https://idollist.idolmaster-official.jp/"> アイドル名鑑</a>
-                <h4>SPARQL関係</h4>
-                <a href="https://sparql.crssnky.xyz/imas/"> im@sparql</a><br />
-                <h4>製作者関係</h4>
-                <a href="https://hagiayato.github.io/my-site/"> 製作者のサイト "HA Works"</a><br />
-                <a href="https://github.com/HagiAyato/MySparql/tree/main/imasparql/idolsearch">
-                    このwebアプリのソースコード(github)</a><br />
-            </div>
-        </div>
-    </nav>
-</footer>
+<footer id="site-footer"></footer>
 
 </html>

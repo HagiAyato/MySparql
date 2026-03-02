@@ -214,20 +214,16 @@ function deleteConditions() {
     // 検索ボタン無効化
     // 削除ボタン無効化
     changeEnable(false, "BTNIdolSearch", "BTNDeleteConditions");
-    for (const [key, value] of Object.entries(conditions)) {
-        $("#" + key + "Input").val("");
-    }
     // 検索ボタン有効化
     // 削除ボタン有効化
+    Object.keys(conditions).forEach(key => $(`#${key}Input`).val(""));
     changeEnable(true, "BTNIdolSearch", "BTNDeleteConditions");
 }
 
 /**
- * 検索詳細条件
+ * 検索詳細条件有効/無効
  * @param {boolean} isEnable 有効無効
  */
 function changeEnableConditions(isEnable) {
-    for (const [key, value] of Object.entries(conditions)) {
-        $("#" + key + "Input").prop("disabled", !isEnable);
-    }
+    Object.keys(conditions).forEach(key => $(`#${key}Input`).prop("disabled", !isEnable));
 }

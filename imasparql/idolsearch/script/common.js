@@ -12,22 +12,15 @@ const Query_def = "PREFIX imas: <https://sparql.crssnky.xyz/imasrdf/URIs/imas-sc
 //　要素表示関係
 
 /**
- * 要素の表示非表示
+ * 要素の表示非表示切替
  * @param {string} btnId 表示非表示切替ボタンのID
  * @param {string} elementId 表示非表示切替対象のID
  * @param {string} btnText 表示非表示切替ボタンの文字
  */
 function dispElement(btnId, elementId, btnText) {
-    if ($(elementId).css('display') == 'none') {
-        // 表示
-        $(btnId).text(btnText + '非表示△');
-        $(elementId).attr('style', 'display:block');
-    } else {
-        // 非表示
-        $(btnId).text(btnText + '表示▼');
-        $(elementId).attr('style', 'display:none');
-    }
-
+    const isHidden = $(elementId).css('display') === 'none';
+    $(btnId).text(btnText + (isHidden ? '非表示△' : '表示▼'));
+    $(elementId).css('display', isHidden ? 'block' : 'none');
 }
 
 /**
@@ -36,10 +29,7 @@ function dispElement(btnId, elementId, btnText) {
  * @param {...string} target 対象要素(複数指定可能)
  */
 function changeEnable(isEnable, ...target) {
-    target.forEach(
-        function (item, index) {
-            $("#" + item).prop("disabled", !isEnable);
-        });
+    target.forEach(item => $(`#${item}`).prop("disabled", !isEnable));
 }
 
 // sparql実行関係
@@ -113,21 +103,15 @@ var promiseSparqlRequest = function (url) {
 // 詳細表示画面の処理集約
 
 /**
- * Get the URL parameter value
- * https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+ * URLのクエリパラメータを取得
  *
- * @param {string} name パラメータのキー文字列
- * @param {url} url 対象のURL文字列（任意）
- * @return 引数戻り値
+ * @param {string} name パラメータ名
+ * @param {string} [url] 対象URL。省略時は現在のhref
+ * @returns {string|null} 値またはnull
  */
 function getParam(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
+    const query = new URL(url || window.location.href).searchParams;
+    return query.has(name) ? query.get(name) : null;
 }
 
 /**
