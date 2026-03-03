@@ -2,9 +2,7 @@
  * ページ表示時処理
  */
 window.onload = function () {
-    const Subject = getParam('s');
-    if (Subject == null || Subject == "") location.href = "/MySparql/imasparql/idolsearch/";
-    // アイドル詳細読み込み
+    const Subject = getSubjectOrRedirect();
     makeRDFLink(Subject);
     doIdolDetail(Subject);
     doIdolColl(Subject);
@@ -91,24 +89,21 @@ const request = new XMLHttpRequest();
 function doIdolDetail(Subject) {
     // クエリビルド
     const search1 = escapeForSparql(Subject);
-    // URL、クエリ結合
-    const urlQuery = ADDRESS + encodeURIComponent(QUERY_DETAIL[0] + search1 + QUERY_DETAIL[1] + QUERY_DETAIL[2] + QUERY_DETAIL[4]);
     // 通信実行
-    promiseSparqlRequest(urlQuery).then(json => {
-        // 通信成功
+    runSubjectQuery(
+        [ QUERY_DETAIL[0], QUERY_DETAIL[1], QUERY_DETAIL[2], QUERY_DETAIL[4] ],
+        search1
+    ).then(json => {
         if (Object.keys(json).length < 1) {
             // 名前のみでもう一回検索
-            const urlQuery2 = ADDRESS + encodeURIComponent(QUERY_DETAIL[0] + search1 + QUERY_DETAIL[1] + QUERY_DETAIL[3] + QUERY_DETAIL[4]);
-            // 通信実行
-            promiseSparqlRequest(urlQuery2).then(json => {
-                showDetail(json);
-            }).catch(error => {
-                // 通信失敗
-                alert('エラーが発生しました：' + error);
-            });
-        } else {
-            showDetail(json);
+            return runSubjectQuery(
+                [ QUERY_DETAIL[0], QUERY_DETAIL[1], QUERY_DETAIL[3], QUERY_DETAIL[4] ],
+                search1
+            );
         }
+        return json;
+    }).then(json => {
+        showDetail(json);
     }).catch(error => {
         // 通信失敗
         alert('エラーが発生しました：' + error);
@@ -160,11 +155,7 @@ function initCallTable() {
  * @param {String} Subject 主語 
  */
 function doIdolColl(Subject) {
-    // クエリビルド
-    const search1 = escapeForSparql(Subject);
-    // URL、クエリ結合
-    const urlQuery = ADDRESS + encodeURIComponent(QUERY_CALL[0] + search1 + QUERY_CALL[1]);
-    promiseSparqlRequest(urlQuery).then(json => {
+    runSubjectQuery(QUERY_CALL, Subject).then(json => {
         // 通信成功
         // ヘッダ挿入
         initCallTable();
@@ -205,11 +196,7 @@ const QUERY_UNIT =
  * @param {String} Subject 主語 
  */
 function doIdolUnit(Subject) {
-    // クエリビルド
-    const search1 = escapeForSparql(Subject);
-    // URL、クエリ結合
-    const urlQuery = ADDRESS + encodeURIComponent(QUERY_UNIT[0] + search1 + QUERY_UNIT[1]);
-    promiseSparqlRequest(urlQuery).then(json => {
+    runSubjectQuery(QUERY_UNIT, Subject).then(json => {
         // 通信成功
         // ヘッダ挿入
         init2ColumnsTable("#unitTable", "№", "ユニット名");

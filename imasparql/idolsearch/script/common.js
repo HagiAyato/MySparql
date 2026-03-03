@@ -115,6 +115,30 @@ function getParam(name, url) {
 }
 
 /**
+ * Query から subject を取得し、無ければトップにリダイレクト
+ * @returns {string} subject
+ */
+function getSubjectOrRedirect() {
+    const s = getParam('s');
+    if (!s) location.href = "/MySparql/imasparql/idolsearch/";
+    return s;
+}
+
+/**
+ * QUERY_* 配列と subject を渡して Sparql を実行する
+ * @param {Array} queryParts [prefix, suffix]
+ * @param {string} subject 件名
+ * @returns {Promise} JSON results
+ */
+function runSubjectQuery(queryParts, subject) {
+    const search = escapeForSparql(subject);
+    // suffix may be split across multiple elements; join them
+    const suffix = queryParts.slice(1).join('');
+    const url = ADDRESS + encodeURIComponent(queryParts[0] + search + suffix);
+    return promiseSparqlRequest(url);
+}
+
+/**
  * 2列テーブルの初期化
  * @param {String} tableId テーブルID
  * @param {String} thName ヘッダ列名
@@ -140,6 +164,13 @@ function writeDetailTable(i) {
                     $("<tr></tr>")
                         .append($("<th></th>").text(item.replace(/_kg$/, "")))
                         .append($("<td></td>").text(val + (isNaN(val) ? "" : "[" + unit + "]")))
+                );
+                break;
+            case /^ブランド$/.test(item):
+                $("#detailTable").append(
+                    $("<tr></tr>")
+                        .append($("<th></th>").text(item))
+                        .append($("<td class='bg" + i[item]["value"] + "'></td>").text(i[item]["value"]))
                 );
                 break;
             case /^年齢$/.test(item):
@@ -283,3 +314,45 @@ function writeName(json, tableName) {
 function makeRDFLink(Subject) {
     $("#rdfLink").attr("href", "https://sparql.crssnky.xyz/imasrdf/RDFs/detail/" + encodeURIComponent(Subject))
 }
+
+// ローカル実行時のサポート
+;(function () {
+    const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.protocol === 'file:';
+    if (!isLocal) return;
+
+    // URLバーに /MySparql が付いていたら自動で削除してリダイレクト
+    if (location.pathname.startsWith('/MySparql')) {
+        const newPath = location.pathname.replace(/^\/MySparql/, '') + location.search + location.hash;
+        location.replace(newPath);
+        return;
+    }
+
+    // ページ内のリンクを修正するヘルパー
+    function fixMySparqlLinks(root) {
+        const $root = root ? $(root) : $(document);
+        $root.find('a[href^="/MySparql"]').each(function () {
+            const href = $(this).attr('href');
+            if (!href) return;
+            $(this).attr('href', href.replace(/^\/MySparql/, ''));
+        });
+    }
+
+    // DOMContentLoaded 後に一度実行
+    $(function () { fixMySparqlLinks(); });
+
+    // 動的に追加されるリンクにも対応するため MutationObserver で監視
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(m => {
+            m.addedNodes && m.addedNodes.forEach(node => {
+                if (node.nodeType !== 1) return;
+                // 追加要素自身またはその子孫に該当リンクがあれば修正
+                if (node.matches && node.matches('a[href^="/MySparql"]')) {
+                    fixMySparqlLinks(node);
+                } else {
+                    fixMySparqlLinks(node);
+                }
+            });
+        });
+    });
+    observer.observe(document.documentElement || document.body, { childList: true, subtree: true });
+})();

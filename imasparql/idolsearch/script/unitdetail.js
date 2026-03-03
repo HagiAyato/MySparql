@@ -2,9 +2,7 @@
  * ページ表示時処理
  */
 window.onload = function () {
-    const Subject = getParam('s');
-    if (Subject == null || Subject == "") location.href = "/MySparql/imasparql/idolsearch/";
-    // アイドル詳細読み込み
+    const Subject = getSubjectOrRedirect();
     makeRDFLink(Subject);
     doUnitDetail(Subject);
     doMemberList(Subject);
@@ -32,11 +30,8 @@ const QUERY_UNIT =
  * @param {String} Subject 主語 
  */
 function doUnitDetail(Subject) {
-    // クエリビルド
-    const search1 = escapeForSparql(Subject);
-    // URL、クエリ結合
-    const urlQuery = ADDRESS + encodeURIComponent(QUERY_UNIT[0] + search1 + QUERY_UNIT[1]);
-    promiseSparqlRequest(urlQuery).then(json => {
+    // Sparql実行
+    runSubjectQuery(QUERY_UNIT, Subject).then(json => {
         // 通信成功
         // ヘッダ挿入
         init2ColumnsTable("#detailTable", "項目", "情報");
@@ -76,11 +71,8 @@ const QUERY_UNIT_MEMBER =
  * @param {String} Subject 主語 
  */
 function doMemberList(Subject) {
-    // クエリビルド
-    const search1 = escapeForSparql(Subject);
-    // URL、クエリ結合
-    const urlQuery = ADDRESS + encodeURIComponent(QUERY_UNIT_MEMBER[0] + search1 + QUERY_UNIT_MEMBER[1]);
-    promiseSparqlRequest(urlQuery).then(json => {
+    // Sparql実行
+    runSubjectQuery(QUERY_UNIT_MEMBER, Subject).then(json => {
         // 通信成功
         // ヘッダ挿入
         init2ColumnsTable("#memberTable", "No.", "名前");

@@ -2,9 +2,7 @@
  * ページ表示時処理
  */
 window.onload = function () {
-    const Subject = getParam('s');
-    if (Subject == null || Subject == "") location.href = "/MySparql/imasparql/idolsearch/";
-    // アイドル詳細読み込み
+    const Subject = getSubjectOrRedirect();
     makeRDFLink(Subject);
     doClothesDetail(Subject);
     doMemberList(Subject);
@@ -29,11 +27,8 @@ const QUERY_CLOTHES =
  * @param {String} Subject 主語 
  */
 function doClothesDetail(Subject) {
-    // クエリビルド
-    const search1 = escapeForSparql(Subject);
-    // URL、クエリ結合
-    const urlQuery = ADDRESS + encodeURIComponent(QUERY_CLOTHES[0] + search1 + QUERY_CLOTHES[1]);
-    promiseSparqlRequest(urlQuery).then(json => {
+    // Sparql実行
+    runSubjectQuery(QUERY_CLOTHES, Subject).then(json => {
         // 通信成功
         // ヘッダ挿入
         init2ColumnsTable("#detailTable", "項目", "情報");
@@ -73,11 +68,8 @@ const QUERY_CLOTHES_MEMBER =
  * @param {String} Subject 主語 
  */
 function doMemberList(Subject) {
-    // クエリビルド
-    const search1 = escapeForSparql(Subject);
-    // URL、クエリ結合
-    const urlQuery = ADDRESS + encodeURIComponent(QUERY_CLOTHES_MEMBER[0] + search1 + QUERY_CLOTHES_MEMBER[1]);
-    promiseSparqlRequest(urlQuery).then(json => {
+    // Sparql実行
+    runSubjectQuery(QUERY_CLOTHES_MEMBER, Subject).then(json => {
         // 通信成功
         // ヘッダ挿入
         init2ColumnsTable("#memberTable", "No.", "名前");
